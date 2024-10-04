@@ -27,8 +27,8 @@ variable "github_username" {
   default     = "sergkhit"
 }
 
-variable "role_name" {
-  description = "IAM role for GitHub Actions"
+variable "iam_role_github_actions" {
+  description = "IAM role GitHub Actions"
   type        = string
   default     = "GithubActionsRole"
 }

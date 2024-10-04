@@ -1,29 +1,30 @@
-Project: rolling-scopes-school. Task1 - AWS Account Configuration.
+Project: rolling-scopes-school. 
+
+Task1 - AWS Account Configuration.
+
 https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/1_basic-configuration/task_1.md
 
-
+===========================================================
 
 Project file Structure.
+
+Screenshots/: directory contains resources screenshots.
 
 README.md:    This file.
 
 .gitignore:   file specifies which folders or files should be ignored when tracking changes with Git.
 
-Screenshots/: directory contains resources screenshots.
+main.tf:      main configuration file the core infrastructure and providers.
 
-main.tf:      main configuration file the core infrastructure.
-
-backend.tf:   file contains the S3 resource declarations.
+backend.tf:   file contains the S3 resource declarations for terraform backend.
 
 variables.tf: file defines input variables for Terraform configuration.
 
-providers.tf: file specifies the providers needed for Terraform configuration
+outputs.tf:  file contains the output definitions for the Terraform resources.
 
-#outputs.tf:  file contains the output definitions for the Terraform resources.
+iam.tf:      file contains the IAM resource declarations.
 
-#iam.tf:      file contains the IAM resource declarations.
-
-#.github/workflows/: directory is where GitHub-specific files are stored,  workflows for GitHub Actions.
+.github/workflows/: directory GitHub-specific files,  workflows for GitHub Actions.
 
 ===========================================================
 
@@ -37,7 +38,7 @@ providers.tf: file specifies the providers needed for Terraform configuration
 
 `cp terraform.tfvars.example terraform.tfvars`
 
-Edit `terraform.tfvars` with your data
+Edit `terraform.tfvars` with your information
 
 3. **Initialize Terraform**
 

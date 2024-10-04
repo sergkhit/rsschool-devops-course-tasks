@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = var.s3_bucket
+    bucket = "rs-tfstate-khit"
     key    = "terraform.tfstate"
     region = "us-east-1"
   }
