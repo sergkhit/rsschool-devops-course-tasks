@@ -24,6 +24,8 @@ outputs.tf:  file contains the output definitions for the Terraform resources.
 
 iam.tf:      file contains the IAM resource declarations.
 
+terraform.tfvars.example: file contains the variables example for resourses
+
 .github/workflows/: directory GitHub-specific files,  workflows for GitHub Actions.
 
 ===========================================================
@@ -63,7 +65,7 @@ Provide a screenshot of the non-root account secured by MFA (ensure sensitive in
 Bucket and GithubActionsRole IAM role configured (30 points)
 Terraform code is created and includes:
 A bucket for Terraform states - (ok)
-IAM role with correct Identity-based and Trust policies
+IAM role with correct Identity-based and Trust policies (ok)
 
 Github Actions workflow is created (30 points)
 Workflow includes all jobs
@@ -84,4 +86,4 @@ Submission (5 points)
 A GitHub Actions (GHA) pipeline is passing
 
 Pts calc
-10 + 10 + 10 => 30
+10 + 30 + 10 + 5 => 45
