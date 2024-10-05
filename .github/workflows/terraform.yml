@@ -9,7 +9,6 @@ on:
 env:
   TERRAFORM_VER: '1.9.6'
   AWS_REGION: 'us-east-1'
-  AWS_PROFILE: default
     
 permissions:
   contents: read
