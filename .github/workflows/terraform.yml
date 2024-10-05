@@ -8,7 +8,7 @@ on:
 
 env:
   TERRAFORM_VER: '1.9.6'
-  AWS_REGION: 'eu-east-1'
+  AWS_REGION: 'us-east-1'
     
 permissions:
   contents: read
