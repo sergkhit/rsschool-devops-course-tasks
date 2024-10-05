@@ -7,8 +7,8 @@ on:
     branches: [ "main" ]
 
 env:
-  TERRAFORM_VERSION: '1.9.6'
-  AWS_REGION_ID: 'eu-east-1'
+  TERRAFORM_VER: '1.9.6'
+  AWS_REGION: 'eu-east-1'
     
 permissions:
   contents: read
@@ -32,7 +32,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_version: ${{ env.TERRAFORM_VER }}
 
       - name: Terraform Init
         run: terraform init
