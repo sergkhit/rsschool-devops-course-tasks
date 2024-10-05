@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "github_actions_role_policy" {
   }
 }
 
-# GitHub Actions OIDC Provider -
+# GitHub Actions OIDC Provider
 resource "aws_iam_openid_connect_provider" "github_actions_IODC_provider" {
   client_id_list  = ["sts.amazonaws.com"]
   url             = "https://token.actions.githubusercontent.com"
