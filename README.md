@@ -6,6 +6,7 @@ https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/1_basi
 
 ===========================================================
 
+
 Project file Structure.
 
 Screenshots/: directory contains resources screenshots.
