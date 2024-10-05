@@ -30,7 +30,7 @@ jobs:
             role-to-assume: ${{ secrets.aws_iam_role }}
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2.0.3
         with:
           terraform_version: 1.9.6
 
@@ -58,7 +58,7 @@ jobs:
             role-to-assume: ${{ secrets.aws_iam_role }}
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2.0.3
 
       - name: Terraform init shared states
         run: terraform init
