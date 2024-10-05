@@ -1,0 +1,20 @@
+# AWS region
+aws_region = "put_your_aws_region"
+
+# AWS account ID
+aws_id = "put_your_aws_id"
+
+# github repository
+github_repo = "put_your_github_repo"
+
+# github username
+github_username = "put_your_github_username"
+
+#Environment (prod, dev, e t.c.)
+environment = "put_your_environment"
+
+# IAM role for github actions
+iam_role_github_actions = "put_your_github_actions_role"
+
+#S3 bucket name
+s3_bucket = "put_your_S3_bucket_name"
