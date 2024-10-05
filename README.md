@@ -4,7 +4,8 @@ Task1 - AWS Account Configuration.
 
 https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/1_basic-configuration/task_1.md
 
-===========================================================
+============================================================
+
 
 Project file Structure.
 
