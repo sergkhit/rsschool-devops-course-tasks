@@ -11,7 +11,7 @@ github_repo = "put_your_github_repo"
 github_username = "put_your_github_username"
 
 #Environment (prod, dev, e t.c.)
-environment = "put_your_environment"
+#environment = "put_your_environment"
 
 # IAM role for github actions
 iam_role_github_actions = "put_your_github_actions_role"
