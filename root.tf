@@ -24,7 +24,7 @@ provider "aws" {
 # }
 # EOF
 
-#   managed_policy_arns = [
+#     managed_policy_arns = [
 #     "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
 #     "arn:aws:iam::aws:policy/AmazonRoute53FullAccess",
 #     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
