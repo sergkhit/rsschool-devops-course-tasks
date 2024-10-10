@@ -4,11 +4,11 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "avail_zone" {
-  description = "availability_zone"
-  default     = "a"
-  type        = string
-}
+# variable "avail_zone" {
+#   description = "availability_zone"
+#   default     = "a"
+#   type        = string
+# }
 
 variable "aws_id" {
   description = "AWS account ID"

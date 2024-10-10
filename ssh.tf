@@ -1,4 +1,4 @@
-resource "aws_key_pair" "epam-tf-ssh-key" {
+resource "aws_key_pair" "rs-task2-tf-ssh-key" {
   key_name   = "rs-tf-ssh-key"
   public_key = var.ssh_key
   tags = {
