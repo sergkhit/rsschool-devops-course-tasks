@@ -9,15 +9,15 @@ output "public_subnet_ids" {
   value       = [aws_subnet.TFpublic-a.id, aws_subnet.TFpublic-b.id, aws_subnet.TFpublic-c.id]
 }
 
-output "security_group_id_ssh" {
-  description = "Security Group ID that allows SSH"
-  value       = aws_security_group.ssh_inbound.id
-}
+# output "security_group_id_ssh" {
+#   description = "Security Group ID that allows SSH"
+#   value       = aws_security_group.ssh_inbound.id
+# }
 
-output "security_group_id_http" {
-  description = "Security Group ID that allows HTTP"
-  value       = aws_security_group.http_inbound.id
-}
+# output "security_group_id_http" {
+#   description = "Security Group ID that allows HTTP"
+#   value       = aws_security_group.http_inbound.id
+# }
 
 output "security_group_id_http_lb" {
   description = "Security Group ID that allows HTTP Load Balancing"
