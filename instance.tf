@@ -7,7 +7,7 @@ resource "aws_instance" "rs-task2-web_server-a" {
   tags = {
     Terraform = true
     Project   = var.project
-    Name = "rs-task2-web_server"
+    Name = "rs-task2-web_server-a"
   }
 }
 
@@ -18,7 +18,9 @@ resource "aws_instance" "rs-task2-database_server-a" {
   security_groups = [aws_security_group.rs-task2-private.id]
 
   tags = {
-    Name = "database-server"
+    Terraform = true
+    Project   = var.project
+    Name = "database-server-a"
   }
 }
 
@@ -31,7 +33,7 @@ resource "aws_instance" "rs-task2-web_server-b" {
   tags = {
     Terraform = true
     Project   = var.project
-    Name = "rs-task2-web_server"
+    Name = "rs-task2-web_server-b"
   }
 }
 
@@ -42,6 +44,8 @@ resource "aws_instance" "rs-task2-database_server-b" {
   security_groups = [aws_security_group.rs-task2-private.id]
 
   tags = {
-    Name = "database-server"
+    Terraform = true
+    Project   = var.project
+    Name = "database-server-b"
   }
 }

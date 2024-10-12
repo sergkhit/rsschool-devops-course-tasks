@@ -43,3 +43,9 @@ output "s3_bucket_name" {
   description = "S3 Bucket Name"
   value       = aws_s3_bucket.bucket.id
 }
+
+output "public_instance_ips" {
+  description = "Public IPs of the web servers"
+  value       = [aws_instance.rs-task2-web_server-a.public_ip, aws_instance.rs-task2-web_server-b.public_ip]
+}
+
