@@ -49,3 +49,8 @@ output "public_instance_ips" {
   value       = [aws_instance.rs-task2-web_server-a.public_ip, aws_instance.rs-task2-web_server-b.public_ip]
 }
 
+output "bastion_public_ip" {
+  description = "Public IP of the bastion server"
+  value       = aws_instance.rs-task2-bastion_host.public_ip
+}
+

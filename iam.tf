@@ -27,6 +27,28 @@ resource "aws_iam_role" "role" {
   }
 }
 
+# policy for web connect ec2_serial_console
+
+# resource "aws_iam_policy" "ec2_serial_console_policy" {
+#   name        = "EC2SerialConsolePolicy"
+#   description = "Policy to allow EC2 Serial Console access"
+
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect   = "Allow",
+#         Action   = "ec2-instance-connect:SendSerialConsoleSSHPublicKey",
+#         Resource = "*"
+#       },
+#     ]
+#   })
+# }
+
+# resource "aws_iam_role_policy_attachment" "role_serial_console_policy_attachment" {
+#   role       = aws_iam_role.role.name
+#   policy_arn = aws_iam_policy.ec2_serial_console_policy.arn
+# }
 
 
 
