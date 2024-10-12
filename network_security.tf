@@ -86,15 +86,18 @@ resource "aws_security_group" "rs-task2-ssh_inbound" {
   }
 }
 
-// Create a Key Pair
+# Create new SSH Key Pair
 
 provider "tls" {}
-resource "tls_private_key" "t" {
+resource "tls_private_key" "rs-task2-tf-ssh-key" {
   algorithm = "RSA"
+  rsa_bits  = 2048
 }
+
+# Create EC2 key pair from the generated private key
 resource "aws_key_pair" "rs-task2-tf-ssh-key" {
   key_name   = "rs-task2-key"
-  public_key = tls_private_key.t.public_key_openssh
+  public_key = tls_private_key.rs-task2-tf-ssh-key.public_key_openssh
   tags = {
     Terraform = true
     Project   = var.project
@@ -103,9 +106,18 @@ resource "aws_key_pair" "rs-task2-tf-ssh-key" {
 }
 provider "local" {}
 resource "local_file" "key" {
-  content  = tls_private_key.t.private_key_pem
+  content  = tls_private_key.rs-task2-tf-ssh-key.private_key_pem
   filename = "rs-task2.pem"
 }
+
+output "private_key" {
+  value     = tls_private_key.rs-task2-tf-ssh-key.private_key_pem
+  sensitive = true
+}
+
+### terraform output private_key > my_key.pem
+### chmod 400 my_key.pem
+
 
 
 # resource "aws_key_pair" "rs-task2-tf-ssh-key" {

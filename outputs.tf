@@ -29,20 +29,20 @@ output "security_group_id_ssh" {
 #   value       = aws_security_group.lb_http_inbound.id
 # }
 
-output "iam_instance_profile_name" {
-  description = "IAM Instance Profile Name"
-  value       = aws_iam_instance_profile.instance_profile.name
-}
+# output "iam_instance_profile_name" {
+#   description = "IAM Instance Profile Name"
+#   value       = aws_iam_instance_profile.instance_profile.name
+# }
 
 # output "key_name" {
 #   description = "Name of the AWS Key Pair"
 #   value       = aws_key_pair.rs-tf-ssh-key.key_name
 # }
 
-output "s3_bucket_name" {
-  description = "S3 Bucket Name"
-  value       = aws_s3_bucket.bucket.id
-}
+# output "s3_bucket_name" {
+#   description = "S3 Bucket Name"
+#   value       = aws_s3_bucket.rs-tfstate-khit.id
+# }
 
 output "public_instance_ips" {
   description = "Public IPs of the web servers"

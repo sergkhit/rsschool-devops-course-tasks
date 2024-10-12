@@ -52,6 +52,12 @@ variable "user_owner" {
   default     = "rs_khit"
 }
 
+variable "ec2_ubuntu_ami" {
+  description = "user of project"
+  type        = string
+  default     = "ami-005fc0f236362e99f"
+}
+
 # for acces for bastion. use https://www.whatismyip.com/ and put your IP with mask /32
 variable "user_laptop_ip" {
   description = "user of project"
@@ -59,8 +65,8 @@ variable "user_laptop_ip" {
   default     = "111.222.222.111/32" 
 }
 
-variable "ssh_key" {
-  description = "Provides custom public ssh key"
-  type        = string
-  default     = ""
-}
+# variable "ssh_key" {
+#   description = "Provides custom public ssh key"
+#   type        = string
+#   default     = ""
+# }
