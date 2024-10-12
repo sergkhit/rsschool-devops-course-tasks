@@ -34,6 +34,7 @@ resource "aws_subnet" "TFprivate-a" {
   vpc_id            = aws_vpc.TFvpc.id
   cidr_block        = "10.20.102.0/24"
   availability_zone = "us-east-1a"
+  map_public_ip_on_launch = false
   tags = {
     Terraform = true
     Project   = var.project
@@ -45,6 +46,7 @@ resource "aws_subnet" "TFprivate-b" {
   vpc_id            = aws_vpc.TFvpc.id
   cidr_block        = "10.20.104.0/24"
   availability_zone = "us-east-1b"
+  map_public_ip_on_launch = false
   tags = {
     Terraform = true
     Project   = var.project

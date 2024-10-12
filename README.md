@@ -25,7 +25,7 @@ iam.tf:      file contains the IAM resource declarations.
 
 instance.tf: file contains the resource declarations all instances in public and private networks
 
-network_security.tf: file contains the resource declarations security groups and ssh keys
+network_security.tf: file contains the resource declarations security groups, access-lists and ssh keys
 
 network.tf: file contains the resource declarations for VPC, networks, IGW, NAT and route tables
 
