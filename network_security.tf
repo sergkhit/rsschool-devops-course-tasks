@@ -92,12 +92,28 @@ provider "tls" {}
 resource "tls_private_key" "t" {
   algorithm = "RSA"
 }
-resource "aws_key_pair" "test" {
+resource "aws_key_pair" "rs-task2-tf-ssh-key" {
   key_name   = "rs-task2-key"
   public_key = tls_private_key.t.public_key_openssh
+  tags = {
+    Terraform = true
+    Project   = var.project
+    Owner     = var.user_owner
+  }
 }
 provider "local" {}
 resource "local_file" "key" {
   content  = tls_private_key.t.private_key_pem
   filename = "rs-task2.pem"
 }
+
+
+# resource "aws_key_pair" "rs-task2-tf-ssh-key" {
+#   key_name   = "rs-tf-ssh-key"
+#   public_key = var.ssh_key
+#   tags = {
+#     Terraform = true
+#     Project   = var.project
+#     Owner     = var.user_owner
+#   }
+# }
