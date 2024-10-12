@@ -55,31 +55,31 @@ output "bastion_public_ip" {
 }
 
 output "web_server_a_public_ip" {
-  description = "web_server_a_public_ip"
+  description = "public ip from web server A"
   value       = aws_instance.rs-task2-web_server-a.public_ip
 }
 
 output "web_server_a_private_ip" {
-  description = "web_server_a_private_ip"
+  description = "private ip from web server A"
   value       = aws_instance.rs-task2-web_server-a.private_ip
 }
 
 output "database_server_a_private_ip" {
-  description = "database_server_a_private_ip"
+  description = "private ip from database server A"
   value       = aws_instance.rs-task2-database_server-a.private_ip
 }
 
 output "web_server_b_public_ip" {
-  description = "web_server_b_public_ip"
+  description = "public ip from web server B"
   value       = aws_instance.rs-task2-web_server-b.public_ip
 }
 
 output "web_server_b_private_ip" {
-  description = "web_server_b_private_ip"
-  value       = aws_instance.rs-task2-web_server-b.private_ip
+  description = "private ip from web server B"
+  value       = aws_instance.rs-task2-web_server-a.private_ip
 }
 
 output "database_server_b_private_ip" {
-  description = "database_server_b_private_ip"
+  description = "private ip from database server b"
   value       = aws_instance.rs-task2-database_server-b.private_ip
 }
