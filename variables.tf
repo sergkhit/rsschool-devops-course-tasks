@@ -62,7 +62,7 @@ variable "ec2_ubuntu_ami" {
 variable "user_laptop_ip" {
   description = "user of project"
   type        = string
-  default     = "111.222.222.111/32" 
+  default     = "81.19.140.46/32" 
 }
 
 # variable "ssh_key" {
