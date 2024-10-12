@@ -3,6 +3,7 @@ resource "aws_instance" "rs-task2-web_server-a" {
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.TFpublic-a.id
   security_groups = [aws_security_group.rs-task2-public.id]
+  associate_public_ip_address = true 
 
   tags = {
     Terraform = true
@@ -16,7 +17,7 @@ resource "aws_instance" "rs-task2-database_server-a" {
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.TFprivate-a.id
   security_groups = [aws_security_group.rs-task2-private.id]
-
+  
   tags = {
     Terraform = true
     Project   = var.project
@@ -29,6 +30,7 @@ resource "aws_instance" "rs-task2-web_server-b" {
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.TFpublic-b.id
   security_groups = [aws_security_group.rs-task2-public.id]
+  associate_public_ip_address = true 
 
   tags = {
     Terraform = true

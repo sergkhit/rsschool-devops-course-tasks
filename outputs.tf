@@ -44,13 +44,42 @@ output "security_group_id_ssh" {
 #   value       = aws_s3_bucket.rs-tfstate-khit.id
 # }
 
-output "public_instance_ips" {
-  description = "Public IPs of the web servers"
-  value       = [aws_instance.rs-task2-web_server-a.public_ip, aws_instance.rs-task2-web_server-b.public_ip]
-}
+# output "public_instance_ips" {
+#   description = "Public IPs of the web servers"
+#   value       = [aws_instance.rs-task2-web_server-a.public_ip, aws_instance.rs-task2-web_server-b.public_ip]
+# }
 
 output "bastion_public_ip" {
-  description = "Public IP of the bastion server"
+  description = "Public IP of the bastion servers"
   value       = aws_instance.rs-task2-bastion_host.public_ip
 }
 
+output "web_server_a_public_ip" {
+  description = "web_server_a_public_ip"
+  value       = aws_instance.rs-task2-web_server-a.public_ip
+}
+
+output "web_server_a_private_ip" {
+  description = "web_server_a_private_ip"
+  value       = aws_instance.rs-task2-web_server-a.private_ip
+}
+
+output "database_server_a_private_ip" {
+  description = "database_server_a_private_ip"
+  value       = aws_instance.rs-task2-database_server-a.private_ip
+}
+
+output "web_server_b_public_ip" {
+  description = "web_server_b_public_ip"
+  value       = aws_instance.rs-task2-web_server-b.public_ip
+}
+
+output "web_server_b_private_ip" {
+  description = "web_server_b_private_ip"
+  value       = aws_instance.rs-task2-web_server-b.private_ip
+}
+
+output "database_server_b_private_ip" {
+  description = "database_server_b_private_ip"
+  value       = aws_instance.rs-task2-database_server-b.private_ip
+}

@@ -46,6 +46,16 @@ Customize Variables Modify variables.tf to set your preferred project name and e
 
 Run CI / CD The plan workflow will run automatically on pull requests to the main branch, and on merged PRs to main.
 
+-------------------------------
+Issued AWS addresses of all servers can be seen after "terraform apply"; they are displayed in the outputs.
+
+for connect to bastion:
+
+use https://www.whatismyip.com/ and put your IP with mask /32 in variables.tf in variable "user_laptop_ip"
+
+chmod 400 rs-task2-key.pem
+ssh -i rs-task2-key.pem ubuntu@ip_address_bastion
+
 
 ===========================================================
 
