@@ -27,6 +27,9 @@ resource "aws_iam_role" "role" {
   }
 }
 
+
+
+
 # data "template_file" "iam_policy" {
 #   template = file("${path.module}/iam_policy.json")
 #   vars = {

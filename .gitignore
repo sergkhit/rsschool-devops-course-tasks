@@ -41,5 +41,5 @@ terraform.rc
 
 #Ignore other files
 .DS_Store
-.pem
+*.pem
 cache

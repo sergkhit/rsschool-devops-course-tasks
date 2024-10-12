@@ -139,7 +139,7 @@ resource "aws_key_pair" "rs-task2-tf-ssh-key" {
 provider "local" {}
 resource "local_file" "key" {
   content  = tls_private_key.rs-task2-tf-ssh-key.private_key_pem
-  filename = "rs-task2.pem"
+  filename = "rs-task2-key.pem"
 }
 
 output "private_key" {
@@ -147,8 +147,9 @@ output "private_key" {
   sensitive = true
 }
 
-### terraform output private_key > my_key.pem
-### chmod 400 my_key.pem
+# terraform output private_key > rs-task2-key.pem
+# chmod 400 rs-task2-key.pem
+# ssh -i rs-task2-key.pem ubuntu@ip_address_bastion
 
 
 
