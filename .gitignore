@@ -38,3 +38,7 @@ terraform.rc
 
 #Ignore PhpStorm files
 .idea
+
+#Ignore other files
+.DS_Store
+cache

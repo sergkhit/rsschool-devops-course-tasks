@@ -52,6 +52,13 @@ variable "user_owner" {
   default     = "rs_khit"
 }
 
+# for acces for bastion. use https://www.whatismyip.com/ and put your IP with mask /32
+variable "user_laptop_ip" {
+  description = "user of project"
+  type        = string
+  default     = "111.222.222.111/32" 
+}
+
 variable "ssh_key" {
   description = "Provides custom public ssh key"
   type        = string

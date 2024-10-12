@@ -16,7 +16,7 @@ output "private_subnet_ids" {
 
 output "security_group_id_ssh" {
   description = "Security Group ID that allows SSH"
-  value       = aws_security_group.ssh_inbound.id
+  value       = aws_security_group.rs-task2-ssh_inbound.id
 }
 
 # output "security_group_id_http" {
