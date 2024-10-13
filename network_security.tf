@@ -104,10 +104,14 @@ resource "aws_security_group" "rs-task2-ssh_inbound" {
   vpc_id      = aws_vpc.TFvpc.id
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.user_laptop_ip] # ip your laptop from variables
+    # from_port   = 22
+    # to_port     = 22
+    # protocol    = "tcp"
+    # cidr_blocks = [var.user_laptop_ip] # ip your laptop from variables
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
     Name      = "rs-task2-ssh-inbound-sg"
@@ -146,19 +150,3 @@ output "private_key" {
   value     = tls_private_key.rs-task2-tf-ssh-key.private_key_pem
   sensitive = true
 }
-
-# terraform output private_key > rs-task2-key.pem
-# chmod 400 rs-task2-key.pem
-# ssh -i rs-task2-key.pem ubuntu@ip_address_bastion
-
-
-
-# resource "aws_key_pair" "rs-task2-tf-ssh-key" {
-#   key_name   = "rs-tf-ssh-key"
-#   public_key = var.ssh_key
-#   tags = {
-#     Terraform = true
-#     Project   = var.project
-#     Owner     = var.user_owner
-#   }
-# }

@@ -64,9 +64,3 @@ variable "user_laptop_ip" {
   type        = string
   default     = "81.19.140.46/32" 
 }
-
-# variable "ssh_key" {
-#   description = "Provides custom public ssh key"
-#   type        = string
-#   default     = ""
-# }
