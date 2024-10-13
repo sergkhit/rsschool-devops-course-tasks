@@ -32,58 +32,6 @@ resource "aws_security_group" "rs-task2-bastion" {
   }
 }
 
-
-
-# resource "aws_security_group" "rs-task2-sg-default" {
-#   name        = "rs-task2-default-security-group"
-#   description = "Default security group for all instances"
-#   vpc_id      = aws_vpc.TFvpc.id
-
-#   ingress {
-#     from_port = 0
-#     to_port   = 0
-#     protocol  = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-
-#   egress {
-#     from_port = 0
-#     to_port   = 0
-#     protocol  = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-# }
-
-
-resource "aws_security_group" "rs-task2-nat" {
-  name        = "rs-task2-nat-sg"
-  description = "Security group for NAT instance"
-  vpc_id      = aws_vpc.TFvpc.id
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["10.20.0.0/16"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-   
-    tags = {
-    Name      = "rs-task2-nat-sg"
-    Terraform = "true"
-    Project   = var.project
-    Owner     = var.user_owner
-
-  }
-}
-
-
 resource "aws_security_group" "rs-task2-public" {
   name        = "rs-task2-public-security-group"
   description = "Security group for instances in public subnets"
@@ -121,7 +69,7 @@ resource "aws_security_group" "rs-task2-private" {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
-    security_groups = [aws_security_group.rs-task2-bastion.id]
+    cidr_blocks = ["10.20.0.0/16"]
     description     = "Allow SSH from bastion-host."
   }
 
@@ -129,8 +77,8 @@ resource "aws_security_group" "rs-task2-private" {
     from_port       = 8
     to_port         = 0
     protocol        = "icmp"
-    security_groups = [aws_security_group.rs-task2-bastion.id]
-    description     = "Allow ICMP echo from bastion-host."
+    cidr_blocks = ["10.20.0.0/16"]
+    description     = "Allow ICMP echo from local netw."
   }
 
   egress {

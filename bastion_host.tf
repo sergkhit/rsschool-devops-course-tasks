@@ -10,7 +10,6 @@ resource "aws_instance" "rs-task2-bastion_host" {
     Terraform = "true"
     Project   = var.project
     Owner     = var.user_owner
-    Name = "rs-task2-bastion-host"
-    
+    Name = "rs-task2-bastion-host"    
   }
 }

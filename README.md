@@ -49,14 +49,14 @@ Run CI / CD The plan workflow will run automatically on pull requests to the mai
 -------------------------------
 Issued AWS addresses of all servers can be seen after "terraform apply"; they are displayed in the outputs.
 
-for connect to bastion:
-
-use https://www.whatismyip.com/ and put your IP with mask /32 in variables.tf in variable "user_laptop_ip"
-
 chmod 400 rs-task2-key.pem
+cat rs-task2-key.pem
 ssh -i rs-task2-key.pem ubuntu@ip_address_bastion
 
-
+After accessing the bastion, create a file named rs-task2-key.pem and paste the contents of the key into it. 
+Then adjust the permissions of rs-task2-key.pem with the following command: chmod 400 rs-task2-key.pem 
+Now you can connect to the servers using the addresses from the outputs.
+ssh -i rs-task2-key.pem ubuntu@ip_address_server
 ===========================================================
 
 Evaluation Criteria (100 points for covering all criteria)
