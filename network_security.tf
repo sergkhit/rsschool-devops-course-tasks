@@ -22,8 +22,8 @@ resource "aws_security_group" "rs-task2-bastion" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
-    tags = {
+
+  tags = {
     Name      = "rs-task2-ssh-inbound-sg"
     Terraform = "true"
     Project   = var.project
@@ -38,24 +38,24 @@ resource "aws_security_group" "rs-task2-public" {
   vpc_id      = aws_vpc.TFvpc.id
 
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-    
+
   # Allowing SSH access from the bastion host 
   ingress {
-    from_port   = 22 
-    to_port     = 22 
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -66,19 +66,19 @@ resource "aws_security_group" "rs-task2-private" {
   vpc_id      = aws_vpc.TFvpc.id
 
   ingress {
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["10.20.0.0/16"]
-    description     = "Allow SSH from bastion-host."
+    description = "Allow SSH from bastion-host."
   }
 
   ingress {
-    from_port       = 8
-    to_port         = 0
-    protocol        = "icmp"
+    from_port   = 8
+    to_port     = 0
+    protocol    = "icmp"
     cidr_blocks = ["10.20.0.0/16"]
-    description     = "Allow ICMP echo from local netw."
+    description = "Allow ICMP echo from local netw."
   }
 
   egress {

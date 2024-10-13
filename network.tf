@@ -1,8 +1,8 @@
 resource "aws_vpc" "TFvpc" {
-  cidr_block       = "10.20.0.0/16"
+  cidr_block           = "10.20.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
-  instance_tenancy = "default"
+  instance_tenancy     = "default"
   tags = {
     Terraform = true
     Project   = var.project
@@ -33,9 +33,9 @@ resource "aws_subnet" "TFpublic-b" {
 }
 
 resource "aws_subnet" "TFprivate-a" {
-  vpc_id            = aws_vpc.TFvpc.id
-  cidr_block        = "10.20.102.0/24"
-  availability_zone = "us-east-1a"
+  vpc_id                  = aws_vpc.TFvpc.id
+  cidr_block              = "10.20.102.0/24"
+  availability_zone       = "us-east-1a"
   map_public_ip_on_launch = false
   tags = {
     Terraform = true
@@ -45,9 +45,9 @@ resource "aws_subnet" "TFprivate-a" {
 }
 
 resource "aws_subnet" "TFprivate-b" {
-  vpc_id            = aws_vpc.TFvpc.id
-  cidr_block        = "10.20.104.0/24"
-  availability_zone = "us-east-1b"
+  vpc_id                  = aws_vpc.TFvpc.id
+  cidr_block              = "10.20.104.0/24"
+  availability_zone       = "us-east-1b"
   map_public_ip_on_launch = false
   tags = {
     Terraform = true
