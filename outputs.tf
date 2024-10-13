@@ -14,9 +14,9 @@ output "private_subnet_ids" {
   value       = [aws_subnet.TFprivate-a.id, aws_subnet.TFprivate-b.id]
 }
 
-output "security_group_id_ssh" {
+output "security_group_id_bastion" {
   description = "Security Group ID that allows SSH"
-  value       = aws_security_group.rs-task2-ssh_inbound.id
+  value       = aws_security_group.rs-task2-bastion.id
 }
 
 output "bastion_public_ip" {
@@ -26,30 +26,30 @@ output "bastion_public_ip" {
 
 output "web_server_a_public_ip" {
   description = "public ip from web server A"
-  value       = aws_instance.rs-task2-web_server-a.public_ip
+  value       = aws_instance.rs-task2-public_server-a.public_ip
 }
 
 output "web_server_a_private_ip" {
   description = "private ip from web server A"
-  value       = aws_instance.rs-task2-web_server-a.private_ip
+  value       = aws_instance.rs-task2-public_server-a.private_ip
 }
 
 output "database_server_a_private_ip" {
   description = "private ip from database server A"
-  value       = aws_instance.rs-task2-database_server-a.private_ip
+  value       = aws_instance.rs-task2-private_server-a.private_ip
 }
 
 output "web_server_b_public_ip" {
   description = "public ip from web server B"
-  value       = aws_instance.rs-task2-web_server-b.public_ip
+  value       = aws_instance.rs-task2-public_server-b.public_ip
 }
 
 output "web_server_b_private_ip" {
   description = "private ip from web server B"
-  value       = aws_instance.rs-task2-web_server-a.private_ip
+  value       = aws_instance.rs-task2-public_server-b.private_ip
 }
 
 output "database_server_b_private_ip" {
   description = "private ip from database server b"
-  value       = aws_instance.rs-task2-database_server-b.private_ip
+  value       = aws_instance.rs-task2-private_server-b.private_ip
 }

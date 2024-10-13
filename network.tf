@@ -1,5 +1,7 @@
 resource "aws_vpc" "TFvpc" {
   cidr_block       = "10.20.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
   instance_tenancy = "default"
   tags = {
     Terraform = true
@@ -92,6 +94,7 @@ resource "aws_route_table_association" "TF_rta_public_b" {
 // Similar resources for private_subnet
 
 resource "aws_eip" "TF_eip" {
+  domain = "vpc"
   tags = {
     Name      = "rs-task2-TF-eip"
     Terraform = true
@@ -125,6 +128,8 @@ resource "aws_route_table" "TF_rt_private" {
     Project   = var.project
   }
 }
+
+
 
 resource "aws_route_table_association" "TF_rta_private_1" {
   subnet_id      = aws_subnet.TFprivate-a.id

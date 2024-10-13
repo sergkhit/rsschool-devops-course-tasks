@@ -1,25 +1,88 @@
 
 // Security groups
 
-resource "aws_security_group" "rs-task2-sg-default" {
-  name        = "rs-task2-default-security-group"
-  description = "Default security group for all instances"
+
+// VPC ssh security group
+
+resource "aws_security_group" "rs-task2-bastion" {
+  name        = "ssh-inbound"
+  description = "allows ssh access from safe IP-range"
   vpc_id      = aws_vpc.TFvpc.id
 
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
+    tags = {
+    Name      = "rs-task2-ssh-inbound-sg"
+    Terraform = "true"
+    Project   = var.project
+    Owner     = var.user_owner
+
+  }
 }
+
+
+
+# resource "aws_security_group" "rs-task2-sg-default" {
+#   name        = "rs-task2-default-security-group"
+#   description = "Default security group for all instances"
+#   vpc_id      = aws_vpc.TFvpc.id
+
+#   ingress {
+#     from_port = 0
+#     to_port   = 0
+#     protocol  = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+#   egress {
+#     from_port = 0
+#     to_port   = 0
+#     protocol  = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# }
+
+
+resource "aws_security_group" "rs-task2-nat" {
+  name        = "rs-task2-nat-sg"
+  description = "Security group for NAT instance"
+  vpc_id      = aws_vpc.TFvpc.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["10.20.0.0/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+   
+    tags = {
+    Name      = "rs-task2-nat-sg"
+    Terraform = "true"
+    Project   = var.project
+    Owner     = var.user_owner
+
+  }
+}
+
 
 resource "aws_security_group" "rs-task2-public" {
   name        = "rs-task2-public-security-group"
@@ -30,6 +93,14 @@ resource "aws_security_group" "rs-task2-public" {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+    
+  # Allowing SSH access from the bastion host 
+  ingress {
+    from_port   = 22 
+    to_port     = 22 
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -47,78 +118,27 @@ resource "aws_security_group" "rs-task2-private" {
   vpc_id      = aws_vpc.TFvpc.id
 
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    cidr_blocks = ["10.20.0.0/16"]
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.rs-task2-bastion.id]
+    description     = "Allow SSH from bastion-host."
+  }
+
+  ingress {
+    from_port       = 8
+    to_port         = 0
+    protocol        = "icmp"
+    security_groups = [aws_security_group.rs-task2-bastion.id]
+    description     = "Allow ICMP echo from bastion-host."
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-// access list for public subnets
-
-resource "aws_network_acl" "rs-task2-public_acl" {
-  vpc_id = aws_vpc.TFvpc.id 
-  ingress {
-    protocol   = "-1"
-    rule_no    = 100 
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0 
-    to_port    = 0
-  }
-
-  egress {
-    protocol   = "-1"
-    rule_no    = 100 
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0 
-  }
-}
-
-resource "aws_network_acl_association" "public_acl_assoc_a" {
-  subnet_id     = aws_subnet.TFpublic-a.id 
-  network_acl_id = aws_network_acl.rs-task2-public_acl.id 
-  }
-
-resource "aws_network_acl_association" "public_acl_assoc_b" {
-  subnet_id     = aws_subnet.TFpublic-b.id 
-  network_acl_id = aws_network_acl.rs-task2-public_acl.id 
-  }
-
-
-
-// VPC ssh security group
-
-resource "aws_security_group" "rs-task2-ssh_inbound" {
-  name        = "ssh-inbound"
-  description = "allows ssh access from safe IP-range"
-  vpc_id      = aws_vpc.TFvpc.id
-
-  ingress {
-    # from_port   = 22
-    # to_port     = 22
-    # protocol    = "tcp"
-    # cidr_blocks = [var.user_laptop_ip] # ip your laptop from variables
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = {
-    Name      = "rs-task2-ssh-inbound-sg"
-    Terraform = "true"
-    Project   = var.project
-    Owner     = var.user_owner
-
+    description = "Anywhere."
   }
 }
 
