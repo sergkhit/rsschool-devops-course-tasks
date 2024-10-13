@@ -58,9 +58,4 @@ variable "ec2_ubuntu_ami" {
   default     = "ami-005fc0f236362e99f"
 }
 
-# # for acces for bastion. use https://www.whatismyip.com/ and put your IP with mask /32
-# variable "user_laptop_ip" {
-#   description = "user of project"
-#   type        = string
-#   default     = "81.19.140.46/32" 
-# }
+
