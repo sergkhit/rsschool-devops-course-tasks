@@ -25,7 +25,7 @@ iam.tf:      file contains the IAM resource declarations.
 
 instance.tf: file contains the resource declarations all instances in public and private networks
 
-network_security.tf: file contains the resource declarations security groups, access-lists and ssh keys
+network_security.tf: file contains the resource declarations security groups and ssh keys
 
 network.tf: file contains the resource declarations for VPC, networks, IGW, NAT and route tables
 
@@ -91,26 +91,26 @@ A resource map screenshot is provided (VPC -> Your VPCs -> your_VPC_name -> Reso
 
 ------------------------------
 
-Additional Tasks (30 points)
+Additional Tasks (30 points) - ok (+30) 
 
-Security Groups and Network ACLs (5 points) ok (+5) 
+Security Groups and Network ACLs (5 points) - ok (+5) 
     Implement security groups and network ACLs for the VPC and subnets.
 
-Bastion Host (5 points) ok (+5) 
+Bastion Host (5 points) - ok (+5) 
     Create a bastion host for secure access to the private subnets.
 
-NAT is implemented for private subnets (10 points) ok (+10)
+NAT is implemented for private subnets (10 points) - ok (+10)
     Orgainize NAT for private subnets with simpler or cheaper way
     Instances in private subnets should be able to reach addresses outside VPC
 
-Documentation (5 points) ok (+5)
+Documentation (5 points) - ok (+5)
     Document the infrastructure setup and usage in a README file.
 
-Submission (5 points)
+Submission (5 points) - ok (+5)
     A GitHub Actions (GHA) pipeline is set up for the Terraform code.
 
 -----------------------------
 Pts calc
  
- 50+10+10+5+5+10+5
+ 50+10+10+5+5+10+5+5 = 100
 
