@@ -1,4 +1,4 @@
-Project: rolling-scopes-school. 
+`Project: rolling-scopes-school. 
 
 Task 2: Basic Infrastructure Configuration
 
@@ -26,6 +26,8 @@ iam.tf:      file contains the IAM resource declarations.
 instance.tf: file contains the resource declarations all instances in public and private networks
 
 network_security.tf: file contains the resource declarations security groups and ssh keys
+
+nacl.tf: file contains the resource declarations access lists
 
 network.tf: file contains the resource declarations for VPC, networks, IGW, NAT and route tables
 
@@ -113,4 +115,3 @@ Submission (5 points) - ok (+5)
 Pts calc
  
  50+10+10+5+5+10+5+5 = 100
-
