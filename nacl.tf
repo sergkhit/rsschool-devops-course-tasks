@@ -5,7 +5,6 @@ resource "aws_network_acl" "rs-task2-public_acl" {
 
   tags = {
     Terraform = true
-    Project   = var.project
     Name      = "rs-task2-public_acl"
   }
 
