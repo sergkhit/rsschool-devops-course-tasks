@@ -2,9 +2,9 @@ name: 'Terraform_Pipeline'
 
 on:
   push:
-    branches: [ "task3" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "task3" ]
+    branches: [ "main" ]
 
 env:
   TERRAFORM_VER: '1.9.6'

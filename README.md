@@ -7,7 +7,7 @@ https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/1_basi
 ============================================================
 
 
-Project file Structure.
+## Project file Structure.
 
 README.md:    This file.
 
@@ -40,7 +40,24 @@ variables.tf: file defines input variables for Terraform configuration.
 
 ===========================================================
 
-## Use Instructions
+## How to Use
+
+Clone the repository Clone the repository and navigate to the project directory:
+git clone git@github.com:sergkhit/rsschool-devops-course-tasks.git
+cd rsschool-devops-course-tasks
+git branch task_3
+
+Initialize Terraform:
+
+terraform init
+
+Plan and Apply Changes:
+
+terraform plan
+
+terraform apply
+
+-------------------------------
 
 Set Up AWS Credentials In your GitHub repository settings, add the following secrets:
 ACTION_ROLE_ARN: ARN of an AWS IAM role with necessary permissions Follow Creating GitHub OIDC for AWS
@@ -59,9 +76,10 @@ After accessing the bastion, create a file named rs-task2-key.pem and paste the 
 Then adjust the permissions of rs-task2-key.pem with the following command: chmod 400 rs-task2-key.pem 
 Now you can connect to the servers using the addresses from the outputs.
 ssh -i rs-task2-key.pem ubuntu@ip_address_server
+
 ===========================================================
 
-Evaluation Criteria (100 points for covering all criteria)
+## Evaluation Criteria (100 points for covering all criteria)
 
 ------------------------------
 
