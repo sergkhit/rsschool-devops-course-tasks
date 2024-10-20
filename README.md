@@ -20,7 +20,7 @@ https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/2_clus
 └── variables.tf
 
 
-## Project file Structure.
+## Project file Structure:
 
 README.md:    This file.
 
