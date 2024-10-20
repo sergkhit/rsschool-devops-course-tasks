@@ -71,7 +71,7 @@ resource "aws_instance" "rs-task-k3s-worker1" {
 
   user_data_replace_on_change = true
 
-    tags = {
+  tags = {
     Terraform = true
     Project   = var.project
     Name      = "rs-task-k3s-worker"
