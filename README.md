@@ -86,10 +86,10 @@ chmod 400 rs-task-key.pem
 cat rs-task-key.pem
 ssh -i rs-task-key.pem ubuntu@ip_address_bastion
 
-After accessing the bastion, create a file named rs-task2-key.pem and paste the contents of the key into it. 
-Then adjust the permissions of rs-task2-key.pem with the following command: chmod 400 rs-task2-key.pem 
+After accessing the bastion, create a file named rs-task-key.pem and paste the contents of the key into it. 
+Then adjust the permissions of rs-task-key.pem with the following command: chmod 400 rs-task-key.pem 
 Now you can connect to the servers using the addresses from the outputs.
-ssh -i rs-task2-key.pem ubuntu@ip_address_server
+ssh -i rs-task-key.pem ubuntu@ip_address_server
 
 ===========================================================
 
