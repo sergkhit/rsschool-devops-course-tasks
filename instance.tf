@@ -75,7 +75,7 @@ resource "aws_instance" "rs-task-k3s-master" {
   #             EOF
 
   # provisioner "local-exec" {
-  #   command = "scp -i rs-task2-key.pem ubuntu@${self.public_ip}:/tmp/k3s_token ./k3s_token"
+  #   command = "scp -i rs-task-key.pem ubuntu@${self.public_ip}:/tmp/k3s_token ./k3s_token"
   # }
 
   tags = {
@@ -103,7 +103,7 @@ resource "aws_instance" "rs-task-k3s-worker1" {
 
   user_data_replace_on_change = true
 
-  tags = {
+    tags = {
     Terraform = true
     Project   = var.project
     Name      = "rs-task-k3s-worker"
