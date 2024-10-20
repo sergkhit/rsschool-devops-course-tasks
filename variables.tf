@@ -36,7 +36,7 @@ variable "iam_role_github_actions" {
 
 variable "s3_bucket" {
   description = "S3 bucket name"
-  default     = "tfstate_rs_task2"
+  default     = "tfstate_rs_task"
   type        = string
 }
 
@@ -49,13 +49,28 @@ variable "project" {
 variable "user_owner" {
   description = "user of project"
   type        = string
-  default     = "rs_khit"
+  default     = "rs_sergkhit"
 }
 
 variable "ec2_ubuntu_ami" {
   description = "user of project"
   type        = string
   default     = "ami-005fc0f236362e99f"
+}
+
+variable "ec2_amazon_linux_ami" {
+  description = "EC2 Instance Image for Bastion Host and Testing"
+  default     = "ami-097c5c21a18dc59ea"
+}
+
+variable "k8s_domain_name" {
+  type    = string
+  default = "example.com"
+}
+
+variable "k8s_subdomain_name" {
+  type    = string
+  default = "k8s.example.com"
 }
 
 

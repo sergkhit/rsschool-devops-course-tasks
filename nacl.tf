@@ -1,11 +1,11 @@
 // access list for public subnets
 
-resource "aws_network_acl" "rs-task2-public_acl" {
+resource "aws_network_acl" "rs-task-public_acl" {
   vpc_id = aws_vpc.TFvpc.id
 
   tags = {
     Terraform = "true"
-    Name      = "rs-task2-public_acl"
+    Name      = "rs-task-public_acl"
   }
 
   ingress {
@@ -29,10 +29,10 @@ resource "aws_network_acl" "rs-task2-public_acl" {
 
 resource "aws_network_acl_association" "public_acl_assoc_a" {
   subnet_id      = aws_subnet.TFpublic-a.id
-  network_acl_id = aws_network_acl.rs-task2-public_acl.id
+  network_acl_id = aws_network_acl.rs-task-public_acl.id
 }
 
 resource "aws_network_acl_association" "public_acl_assoc_b" {
   subnet_id      = aws_subnet.TFpublic-b.id
-  network_acl_id = aws_network_acl.rs-task2-public_acl.id
+  network_acl_id = aws_network_acl.rs-task-public_acl.id
 }

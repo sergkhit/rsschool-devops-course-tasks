@@ -4,7 +4,7 @@
 
 // VPC ssh security group
 
-resource "aws_security_group" "rs-task2-bastion" {
+resource "aws_security_group" "rs-task-bastion" {
   name        = "ssh-inbound"
   description = "allows ssh access from safe IP-range"
   vpc_id      = aws_vpc.TFvpc.id
@@ -24,7 +24,7 @@ resource "aws_security_group" "rs-task2-bastion" {
   }
 
   tags = {
-    Name      = "rs-task2-ssh-inbound-sg"
+    Name      = "rs-task-ssh-inbound-sg"
     Terraform = "true"
     Project   = var.project
     Owner     = var.user_owner
@@ -32,8 +32,8 @@ resource "aws_security_group" "rs-task2-bastion" {
   }
 }
 
-resource "aws_security_group" "rs-task2-public" {
-  name        = "rs-task2-public-security-group"
+resource "aws_security_group" "rs-task-public" {
+  name        = "rs-task-public-security-group"
   description = "Security group for instances in public subnets"
   vpc_id      = aws_vpc.TFvpc.id
 
@@ -60,8 +60,8 @@ resource "aws_security_group" "rs-task2-public" {
   }
 }
 
-resource "aws_security_group" "rs-task2-private" {
-  name        = "rs-task2-private-security-group"
+resource "aws_security_group" "rs-task-private" {
+  name        = "rs-task-private-security-group"
   description = "Security group for instances in private subnets"
   vpc_id      = aws_vpc.TFvpc.id
 
@@ -71,6 +71,14 @@ resource "aws_security_group" "rs-task2-private" {
     protocol    = "tcp"
     cidr_blocks = ["10.20.0.0/16"]
     description = "Allow SSH from bastion-host."
+  }
+
+  ingress {
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = ["10.20.0.0/16"]
+    description = "Allow access to K3s API from bastion host."
   }
 
   ingress {
@@ -93,15 +101,15 @@ resource "aws_security_group" "rs-task2-private" {
 # Create new SSH Key Pair
 
 provider "tls" {}
-resource "tls_private_key" "rs-task2-tf-ssh-key" {
+resource "tls_private_key" "rs-task-tf-ssh-key" {
   algorithm = "RSA"
   rsa_bits  = 2048
 }
 
 # Create EC2 key pair from the generated private key
-resource "aws_key_pair" "rs-task2-tf-ssh-key" {
-  key_name   = "rs-task2-key"
-  public_key = tls_private_key.rs-task2-tf-ssh-key.public_key_openssh
+resource "aws_key_pair" "rs-task-tf-ssh-key" {
+  key_name   = "rs-task-key"
+  public_key = tls_private_key.rs-task-tf-ssh-key.public_key_openssh
   tags = {
     Terraform = true
     Project   = var.project
@@ -110,11 +118,11 @@ resource "aws_key_pair" "rs-task2-tf-ssh-key" {
 }
 provider "local" {}
 resource "local_file" "key" {
-  content  = tls_private_key.rs-task2-tf-ssh-key.private_key_pem
-  filename = "rs-task2-key.pem"
+  content  = tls_private_key.rs-task-tf-ssh-key.private_key_pem
+  filename = "rs-task-key.pem"
 }
 
 output "private_key" {
-  value     = tls_private_key.rs-task2-tf-ssh-key.private_key_pem
+  value     = tls_private_key.rs-task-tf-ssh-key.private_key_pem
   sensitive = true
 }

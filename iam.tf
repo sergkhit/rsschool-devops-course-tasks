@@ -1,10 +1,10 @@
 
 resource "aws_iam_group" "group" {
-  name = "rs_task2_group"
+  name = "rs_task_group"
 }
 
 resource "aws_iam_role" "role" {
-  name = "rs_task2_role"
+  name = "rs_task_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",

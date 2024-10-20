@@ -21,35 +21,35 @@ output "vpc_id" {
 
 output "bastion_public_ip" {
   description = "Public IP of the bastion servers"
-  value       = aws_instance.rs-task2-bastion_host.public_ip
+  value       = aws_instance.rs-task-bastion_host.public_ip
 }
 
 output "public_server_a_public_ip" {
   description = "public ip from web server A"
-  value       = aws_instance.rs-task2-public_server-a.public_ip
-}
-
-output "public_server_a_private_ip" {
-  description = "private ip from web server A"
-  value       = aws_instance.rs-task2-public_server-a.private_ip
-}
-
-output "private_server_a_private_ip" {
-  description = "private ip from database server A"
-  value       = aws_instance.rs-task2-private_server-a.private_ip
+  value       = aws_instance.rs-task-public_server-a.public_ip
 }
 
 output "public_server_b_public_ip" {
   description = "public ip from web server B"
-  value       = aws_instance.rs-task2-public_server-b.public_ip
+  value       = aws_instance.rs-task-public_server-b.public_ip
 }
 
 output "public_server_b_private_ip" {
   description = "private ip from web server B"
-  value       = aws_instance.rs-task2-public_server-b.private_ip
+  value       = aws_instance.rs-task-public_server-b.private_ip
 }
 
-output "private_server_b_private_ip" {
+output "public_server_a_private_ip" {
+  description = "private ip from web server A"
+  value       = aws_instance.rs-task-public_server-a.private_ip
+}
+
+output "rs-task-k3s_master_private_ip" {
+  description = "private ip from database server A"
+  value       = aws_instance.rs-task-k3s_master.private_ip
+}
+
+output "rs-task-k3s_worker_private_ip" {
   description = "private ip from database server b"
-  value       = aws_instance.rs-task2-private_server-b.private_ip
+  value       = aws_instance.rs-task-k3s_worker.private_ip
 }

@@ -6,7 +6,7 @@ resource "aws_vpc" "TFvpc" {
   tags = {
     Terraform = true
     Project   = var.project
-    Name      = "rs-task2-vpc"
+    Name      = "rs-task-vpc"
   }
 }
 
@@ -17,7 +17,7 @@ resource "aws_subnet" "TFpublic-a" {
   tags = {
     Terraform = true
     Project   = var.project
-    Name      = "rs-task2-subnet-public-a"
+    Name      = "rs-task-subnet-public-a"
   }
 }
 
@@ -28,7 +28,7 @@ resource "aws_subnet" "TFpublic-b" {
   tags = {
     Terraform = true
     Project   = var.project
-    Name      = "rs-task2-subnet-public-b"
+    Name      = "rs-task-subnet-public-b"
   }
 }
 
@@ -40,7 +40,7 @@ resource "aws_subnet" "TFprivate-a" {
   tags = {
     Terraform = true
     Project   = var.project
-    Name      = "rs-task2-subnet-private-a"
+    Name      = "rs-task-subnet-private-a"
   }
 }
 
@@ -52,7 +52,7 @@ resource "aws_subnet" "TFprivate-b" {
   tags = {
     Terraform = true
     Project   = var.project
-    Name      = "rs-task2-subnet-private-b"
+    Name      = "rs-task-subnet-private-b"
   }
 }
 
@@ -61,7 +61,7 @@ resource "aws_subnet" "TFprivate-b" {
 resource "aws_internet_gateway" "TFgw" {
   vpc_id = aws_vpc.TFvpc.id
   tags = {
-    Name      = "rs-task2-igw"
+    Name      = "rs-task-igw"
     Terraform = true
     Project   = var.project
   }
@@ -74,7 +74,7 @@ resource "aws_route_table" "TF_rt_public" {
     gateway_id = aws_internet_gateway.TFgw.id
   }
   tags = {
-    Name      = "rs-task2-rt-public"
+    Name      = "rs-task-rt-public"
     Terraform = true
     Project   = var.project
   }
@@ -96,7 +96,7 @@ resource "aws_route_table_association" "TF_rta_public_b" {
 resource "aws_eip" "TF_eip" {
   domain = "vpc"
   tags = {
-    Name      = "rs-task2-TF-eip"
+    Name      = "rs-task-TF-eip"
     Terraform = true
     Project   = var.project
   }
@@ -106,7 +106,7 @@ resource "aws_nat_gateway" "TF_nat_gw" {
   allocation_id = aws_eip.TF_eip.id
   subnet_id     = aws_subnet.TFpublic-a.id
   tags = {
-    Name      = "rs-task2-TF-nat-gw"
+    Name      = "rs-task-TF-nat-gw"
     Terraform = true
     Project   = var.project
   }
@@ -123,7 +123,7 @@ resource "aws_route_table" "TF_rt_private" {
     gateway_id = aws_nat_gateway.TF_nat_gw.id
   }
   tags = {
-    Name      = "rs-task2-rt-private"
+    Name      = "rs-task-rt-private"
     Terraform = true
     Project   = var.project
   }
