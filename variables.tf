@@ -73,9 +73,4 @@ variable "k8s_subdomain_name" {
   default = "k8s.example.com"
 }
 
-# variable "k3s_token" {
-#   type      = string
-#   sensitive = true
-#   default = "AAAA97c5c21a18dc59ea"
-# }
 
