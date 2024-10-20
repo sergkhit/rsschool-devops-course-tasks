@@ -98,3 +98,94 @@ resource "aws_iam_role_policy_attachment" "eventbridge_full_access" {
   role       = aws_iam_role.role_for_github.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess"
 }
+
+#======================================
+
+# IAM role for SSM for k8s token
+
+# resource "aws_iam_role" "ssm_role" {
+#   name = "ssm_role"
+
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Action = "sts:AssumeRole"
+#         Principal = {
+#           Service = "ec2.amazonaws.com"
+#         }
+#         Effect = "Allow"
+#         Sid    = ""
+#       },
+#     ]
+#   })
+# }
+
+# # Policies to the IAM role SSM
+# resource "aws_iam_role_policy_attachment" "ssm_policy_attachment" {
+#   role       = aws_iam_role.ssm_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+# }
+
+# # IAM profile SSM
+# resource "aws_iam_instance_profile" "ssm_instance_profile" {
+#   name = "ssm_instance_profile"
+#   role = aws_iam_role.ssm_role.name
+# }
+
+resource "aws_iam_role" "ssm_role" {
+  name = "ssm_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+        Effect = "Allow"
+        Sid    = ""
+      },
+    ]
+  })
+}
+
+# Policies to the IAM role SSM
+resource "aws_iam_role_policy_attachment" "ssm_policy_attachment" {
+  role       = aws_iam_role.ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+# Custom policy for additional SSM actions
+resource "aws_iam_policy" "ssm_custom_policy" {
+  name        = "ssm_custom_policy"
+  description = "Custom policy for SSM access"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:PutParameter",
+          "ssm:GetParameter",
+          "ssm:DescribeParameters"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Attach custom policy to the IAM role
+resource "aws_iam_role_policy_attachment" "ssm_custom_policy_attachment" {
+  role       = aws_iam_role.ssm_role.name
+  policy_arn = aws_iam_policy.ssm_custom_policy.arn
+}
+
+# IAM profile SSM
+resource "aws_iam_instance_profile" "ssm_instance_profile" {
+  name = "ssm_instance_profile"
+  role = aws_iam_role.ssm_role.name
+}

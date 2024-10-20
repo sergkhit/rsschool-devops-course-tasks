@@ -16,6 +16,13 @@ resource "aws_security_group" "rs-task-bastion" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  #   ingress {
+  #   from_port   = 6443
+  #   to_port     = 6443
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -68,6 +75,14 @@ resource "aws_security_group" "rs-task-private" {
   ingress {
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.20.0.0/16"]
+    description = "Allow SSH from bastion-host."
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["10.20.0.0/16"]
     description = "Allow SSH from bastion-host."

@@ -20,8 +20,23 @@ output "vpc_id" {
 # }
 
 output "bastion_public_ip" {
-  description = "Public IP of the bastion servers"
+  description = "Public IP of the bastion server"
   value       = aws_instance.rs-task-bastion_host.public_ip
+}
+
+output "rs-task-k3s_master_private_ip" {
+  description = "private ip from k3s-master"
+  value       = aws_instance.rs-task-k3s-master.private_ip
+}
+
+output "rs-task-k3s_worker1_private_ip" {
+  description = "private ip from k3s-worker1"
+  value       = aws_instance.rs-task-k3s-worker1.private_ip
+}
+
+output "rs-task-k3s_worker2_private_ip" {
+  description = "private ip from k3s-worker2"
+  value       = aws_instance.rs-task-k3s-worker2.private_ip
 }
 
 output "public_server_a_public_ip" {
@@ -44,12 +59,7 @@ output "public_server_a_private_ip" {
   value       = aws_instance.rs-task-public_server-a.private_ip
 }
 
-output "rs-task-k3s_master_private_ip" {
-  description = "private ip from database server A"
-  value       = aws_instance.rs-task-k3s_master.private_ip
-}
-
-output "rs-task-k3s_worker_private_ip" {
-  description = "private ip from database server b"
-  value       = aws_instance.rs-task-k3s_worker.private_ip
+output "bastion_private_ip" {
+  description = "private IP of the bastion server"
+  value       = aws_instance.rs-task-bastion_host.private_ip
 }

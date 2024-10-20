@@ -1,10 +1,23 @@
-`Project: rolling-scopes-school. 
+Project: rolling-scopes-school. 
 
-Task 2: Basic Infrastructure Configuration
+Task 3: K8s Cluster Configuration and Creation
 
-https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/1_basic-configuration/task_2.md
+https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/2_cluster-configuration/task_3.md
 
 ============================================================
+
+├── backend.tf
+├── bastion_host.tf
+├── iam.tf
+├── instance.tf
+├── nacl.tf
+├── network_security.tf
+├── network.tf
+├── outputs.tf
+├── README.md
+├── root.tf
+├── screenshots
+└── variables.tf
 
 
 ## Project file Structure.
@@ -43,6 +56,7 @@ variables.tf: file defines input variables for Terraform configuration.
 ## How to Use
 
 Clone the repository Clone the repository and navigate to the project directory:
+
 git clone git@github.com:sergkhit/rsschool-devops-course-tasks.git
 cd rsschool-devops-course-tasks
 git branch task_3
@@ -68,9 +82,9 @@ Run CI / CD The plan workflow will run automatically on pull requests to the mai
 -------------------------------
 Issued AWS addresses of all servers can be seen after "terraform apply"; they are displayed in the outputs.
 
-chmod 400 rs-task2-key.pem
-cat rs-task2-key.pem
-ssh -i rs-task2-key.pem ubuntu@ip_address_bastion
+chmod 400 rs-task-key.pem
+cat rs-task-key.pem
+ssh -i rs-task-key.pem ubuntu@ip_address_bastion
 
 After accessing the bastion, create a file named rs-task2-key.pem and paste the contents of the key into it. 
 Then adjust the permissions of rs-task2-key.pem with the following command: chmod 400 rs-task2-key.pem 
@@ -83,53 +97,35 @@ ssh -i rs-task2-key.pem ubuntu@ip_address_server
 
 ------------------------------
 
-Terraform Code Implementation (50 points) - ok (+50) 
+Terraform Code for AWS Resources (10 points) - ok (+10) 
 
-Terraform code is created to configure the following:
-
-    VPC
-    2 public subnets in different AZs  - ok
-    2 private subnets in different AZs  - ok
-    Internet Gateway  - ok
-    Routing configuration:
-        Instances in all subnets can reach each other  - ok
-        Instances in public subnets can reach addresses outside VPC and vice-versa  - ok
+Terraform code is created or extended to manage AWS resources required for the cluster creation.
+The code includes the creation of a bastion host.
 
 ------------------------------
+Cluster Deployment (60 points) - ok (+60) 
 
-Code Organization (10 points) - ok (+10) 
-
-Variables are defined in a separate variables file.   - ok
-Resources are separated into different files for better organization.   - ok
-
-------------------------------
-
-Verification (10 points) - ok (+10) 
-
-Terraform plan is executed successfully. - ok
-A resource map screenshot is provided (VPC -> Your VPCs -> your_VPC_name -> Resource map). - ok
+A K8s cluster is deployed using either kOps or k3s.
+The deployment method is chosen based on the user's preference and understanding of the trade-offs.
 
 ------------------------------
+Cluster Verification (10 points) - NOK
 
-Additional Tasks (30 points) - ok (+30) 
+The cluster is verified by running the kubectl get nodes command from the local computer.
+A screenshot of the kubectl get nodes command output is provided.
 
-Security Groups and Network ACLs (5 points) - ok (+5) 
-    Implement security groups and network ACLs for the VPC and subnets.
+------------------------------
+Workload Deployment (10 points) - NOK
 
-Bastion Host (5 points) - ok (+5) 
-    Create a bastion host for secure access to the private subnets.
+A simple workload is deployed on the cluster using kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml.
+The workload runs successfully on the cluster.
 
-NAT is implemented for private subnets (10 points) - ok (+10)
-    Orgainize NAT for private subnets with simpler or cheaper way
-    Instances in private subnets should be able to reach addresses outside VPC
+------------------------------
+Additional Tasks (10 points)
 
-Documentation (5 points) - ok (+5)
-    Document the infrastructure setup and usage in a README file.
-
-Submission (5 points) - ok (+5)
-    A GitHub Actions (GHA) pipeline is set up for the Terraform code.
+Document the cluster setup and deployment process in a README file. - ok (+10) 
 
 -----------------------------
 Pts calc
  
- 50+10+10+5+5+10+5+5 = 100
+ 10+60+0+0+10 = 80
