@@ -103,19 +103,19 @@ Terraform code is created or extended to manage AWS resources required for the c
 The code includes the creation of a bastion host.
 
 ------------------------------
-Cluster Deployment (60 points) - ok (+60) 
+Cluster Deployment (60 points) - ok (+60) k3s.
 
 A K8s cluster is deployed using either kOps or k3s.
 The deployment method is chosen based on the user's preference and understanding of the trade-offs.
 
 ------------------------------
-Cluster Verification (10 points) - NOK
+Cluster Verification (10 points) - ok (+10)
 
 The cluster is verified by running the kubectl get nodes command from the local computer.
 A screenshot of the kubectl get nodes command output is provided.
 
 ------------------------------
-Workload Deployment (10 points) - NOK
+Workload Deployment (10 points) - ok (+10)
 
 A simple workload is deployed on the cluster using kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml.
 The workload runs successfully on the cluster.
@@ -128,4 +128,4 @@ Document the cluster setup and deployment process in a README file. - ok (+10)
 -----------------------------
 Pts calc
  
- 10+60+0+0+10 = 80
+ 10+60+10+10+10 = 100
