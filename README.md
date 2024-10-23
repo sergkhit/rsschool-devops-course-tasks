@@ -1,10 +1,12 @@
 Project: rolling-scopes-school. 
 
-Task 3: K8s Cluster Configuration and Creation
+Task 4: Jenkins Installation and Configuration
 
-https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/2_cluster-configuration/task_3.md
+In this task, you will install Jenkins CI server on your Kubernetes (K8s) cluster using Helm and configure it to be accessible via internet. IMPORTANT! You better choose to use t3/t2.small VMs, since micro have not sufficient amount of RAM for running Jenkins. Be aware that small instances are not included in the free tier, so you'll be charged 0.05$/hour for them. Best choise for saving - create 1 small instalnce in public network. Setup init script to install k3s and deploy all of the necessary HELM charts to startup jenkins. Destroy environment whenever you are not working with it. Have a look at this JCasC article to store jenkins configuration and jobs as s code.
 
-============================================================
+https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-configuration/task_4.md
+
+===========================================================
 
 ├── backend.tf
 ├── bastion_host.tf
@@ -20,7 +22,7 @@ https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/2_clus
 └── variables.tf
 
 
-## Project file Structure:
+## Project file Structure: 
 
 README.md:    This file.
 
@@ -59,7 +61,7 @@ Clone the repository Clone the repository and navigate to the project directory:
 
 git clone git@github.com:sergkhit/rsschool-devops-course-tasks.git
 cd rsschool-devops-course-tasks
-git branch task_3
+git branch task_4
 
 Initialize Terraform:
 
@@ -96,34 +98,34 @@ ssh -i rs-task-key.pem ubuntu@ip_address_server
 ## Evaluation Criteria (100 points for covering all criteria)
 
 ------------------------------
+Helm Installation and Verification (10 points) - ok (+10) 
 
-Terraform Code for AWS Resources (10 points) - ok (+10) 
-
-Terraform code is created or extended to manage AWS resources required for the cluster creation.
-The code includes the creation of a bastion host.
-
+Helm is installed and verified by deploying the Nginx chart.
 ------------------------------
-Cluster Deployment (60 points) - ok (+60) k3s.
+Cluster Requirements (10 points) - ok (+10) 
 
-A K8s cluster is deployed using either kOps or k3s.
-The deployment method is chosen based on the user's preference and understanding of the trade-offs.
-
+The cluster has a solution for managing persistent volumes (PV) and persistent volume claims (PVC).
 ------------------------------
-Cluster Verification (10 points) - ok (+10)
+Jenkins Installation (50 points) - ok (+10) 
 
-The cluster is verified by running the kubectl get nodes command from the local computer.
-A screenshot of the kubectl get nodes command output is provided.
-
+Jenkins is installed using Helm in a separate namespace.
+Jenkins is available from the internet.
 ------------------------------
-Workload Deployment (10 points) - ok (+10)
+Jenkins Configuration (10 points) - ok (+10) 
 
-A simple workload is deployed on the cluster using kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml.
-The workload runs successfully on the cluster.
-
+Jenkins configuration is stored on a persistent volume and is not lost when Jenkins' pod is terminated.
 ------------------------------
-Additional Tasks (10 points)
+Verification (10 points) - ok (+10) 
 
-Document the cluster setup and deployment process in a README file. - ok (+10) 
+A simple Jenkins freestyle project is created and runs successfully, writing "Hello world" into the log.
+------------------------------
+Additional Tasks (10 points) - ok (+10) 
+
+GitHub Actions (GHA) Pipeline (5 points) 
+A GHA pipeline is set up to deploy Jenkins.
+
+Authentication and Security (5 points) 
+Authentication and security settings are configured for Jenkins.
 
 -----------------------------
 Pts calc
