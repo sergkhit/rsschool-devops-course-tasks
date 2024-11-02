@@ -98,28 +98,28 @@ ssh -i rs-task-key.pem ubuntu@ip_address_server
 ## Evaluation Criteria (100 points for covering all criteria)
 
 ------------------------------
-Helm Installation and Verification (10 points) - ok (+10) 
+Helm Installation and Verification (10 points) - ok (10) 
 
 Helm is installed and verified by deploying the Nginx chart.
 ------------------------------
-Cluster Requirements (10 points) - ok (+10) 
+Cluster Requirements (10 points) - ok (10) 
 
 The cluster has a solution for managing persistent volumes (PV) and persistent volume claims (PVC).
 ------------------------------
-Jenkins Installation (50 points) - ok (+10) 
+Jenkins Installation (50 points) - ok (10) 
 
 Jenkins is installed using Helm in a separate namespace.
 Jenkins is available from the internet.
 ------------------------------
-Jenkins Configuration (10 points) - ok (+10) 
+Jenkins Configuration (10 points) - ok (10) 
 
 Jenkins configuration is stored on a persistent volume and is not lost when Jenkins' pod is terminated.
 ------------------------------
-Verification (10 points) - ok (+10) 
+Verification (10 points) - ok (10) 
 
 A simple Jenkins freestyle project is created and runs successfully, writing "Hello world" into the log.
 ------------------------------
-Additional Tasks (10 points) - ok (+10) 
+Additional Tasks (10 points) - ok (10) 
 
 GitHub Actions (GHA) Pipeline (5 points) 
 A GHA pipeline is set up to deploy Jenkins.
