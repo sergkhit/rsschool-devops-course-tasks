@@ -72,7 +72,7 @@ resource "aws_security_group" "rs-task-public" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-    ingress {
+  ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -102,6 +102,14 @@ resource "aws_security_group" "rs-task-public" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow inbound HTTP"
+  }
+
+  ingress {
+    from_port   = 32000
+    to_port     = 32000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow inbound for Jenkins"
   }
 
   ingress {

@@ -6,7 +6,7 @@ resource "aws_instance" "rs-task-public_server-a" {
   key_name                    = aws_key_pair.rs-task-tf-ssh-key.key_name
   associate_public_ip_address = true
 
-    user_data = <<-EOF
+  user_data = <<-EOF
               #!/bin/bash
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server \
                 --token=${random_password.k3s_token.result} \
@@ -16,33 +16,67 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               # Install Helm
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-              # Helm deploying Nginx
-              helm repo add bitnami https://charts.bitnami.com/bitnami
-              helm install my-nginx bitnami/nginx
-              # Check and after uninstall Nginx
-              kubectl get pods --namespace default
-              helm uninstall my-nginx --namespace default
-              # Add repo for Jenkins
-              helm repo add jenkins https://charts.jenkins.io
-              helm repo update
-              # fix Jenkins pod start problem
-              sudo mkdir -p /data/jenkins-volume
-              sudo chown -R 1000:1000 /data/jenkins-volume
-              # download config files
-              wget -P /opt/Jenkins/conf https://raw.githubusercontent.com/VasylKhytrych/DevOps_course_Vasylkh_2024/refs/heads/task_4_vasylk/task_4_dir/jenkins_config/jenkins-volume.yaml
-              # cd /opt/Jenkins/conf
-              # kubectl apply -f jenkins-volume.yaml
-              # kubectl apply -f jenkins-sa.yaml
-              # helm install jenkins jenkins/jenkins -f jenkins-values.yaml -n jenkins
+
+              # # Helm deploying Nginx
+              # helm repo add bitnami https://charts.bitnami.com/bitnami
+              # helm install my-nginx bitnami/nginx
+
+              # # Check and after uninstall Nginx
+              # kubectl get pods --namespace default
+              # helm uninstall my-nginx --namespace default
+
               # create namespace jenkins for Jenkins
               kubectl create namespace jenkins 
-              # Install Jenkins in namespace jenkins and add LoadBalancer
-              helm install jenkins jenkins/jenkins --namespace jenkins --set serviceType=LoadBalancer --set persistence.storageClass=standard --set persistence.size=10Gi
-          
-              # get_jenkins_ip" 
-              kubectl get svc --namespace jenkins -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' > jenkins_ip.txt
-              cat jenkins_ip.txt
-              JENKINS_IP=$(cat jenkins_ip.txt)             
+
+              # # fix Jenkins pod start problem
+              # sudo mkdir -p /data/jenkins-volume
+              # sudo chown -R 1000:1000 /data/jenkins-volume
+
+              # download config files
+              wget -P /opt/Jenkins/conf https://github.com/sergkhit/rsschool-devops-course-tasks/blob/task4/jenkins/jenkins-volume.yaml
+              wget -P /opt/Jenkins/conf https://github.com/sergkhit/rsschool-devops-course-tasks/blob/task4/jenkins/jenkins-sa.yaml
+              wget -P /opt/Jenkins/conf https://github.com/sergkhit/rsschool-devops-course-tasks/blob/task4/jenkins/jenkins-values.yaml
+
+              # Add repo for Jenkins
+              sleep 300
+              helm repo add jenkins https://charts.jenkins.io
+              helm repo update
+
+              # install jenkins
+              # chart=jenkinsci/jenkins
+              cd /opt/Jenkins/conf
+              kubectl apply -f jenkins-volume.yaml -n jenkins
+              kubectl apply -f jenkins-sa.yaml -n jenkins
+              # helm install jenkins -n jenkins -f jenkins-values.yaml $chart
+              helm install jenkins jenkins/jenkins -n jenkins -f jenkins-values.yaml
+       
+              # fix Jenkins pod start problem
+              # sudo mkdir -p /data/jenkins-volume
+              sudo chown -R 1000:1000 /data/jenkins-volume
+            
+              # get pass
+              mkdir -p /root/conf
+              ln -s /opt/Jenkins/conf /root/conf
+              jsonpath="{.data.jenkins-admin-password}"
+              secret=$(kubectl get secret -n jenkins jenkins -o jsonpath="$jsonpath")
+              echo "$secret" | base64 --decode > /root/conf/jenkins.txt
+
+              # Create Jenkins freestyle project
+              JENKINS_URL="http://localhost:8080"
+              JENKINS_USER="admin"
+              JENKINS_PASS=$(cat /root/conf/jenkins.txt)
+
+              # Wait for Jenkins to be ready
+              while ! curl -s -u "$JENKINS_USER:$JENKINS_PASS" "$JENKINS_URL/login" > /dev/null; do
+                  echo "Waiting for Jenkins to be ready..."
+                  sleep 5
+              done
+
+              # Create freestyle job
+              curl -X POST -u "$JENKINS_USER:$JENKINS_PASS" "$JENKINS_URL/createItem?name=HelloWorld" \
+              --data "<project><description>Hello World Job</description><builders><hudson.tasks.Shell><command>echo 'Hello World'</command></hudson.tasks.Shell></builders></project>" \
+              -H "Content-Type: application/xml"
+   
               EOF
 
   user_data_replace_on_change = true
@@ -109,7 +143,7 @@ resource "aws_instance" "rs-task-public_server-a" {
 #               kubectl create namespace jenkins 
 #               # Install Jenkins in namespace jenkins and add LoadBalancer
 #               helm install jenkins jenkins/jenkins --namespace jenkins --set serviceType=LoadBalancer --set persistence.storageClass=standard --set persistence.size=10Gi
-          
+
 #               # get_jenkins_ip" 
 #               kubectl get svc --namespace jenkins -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}' > jenkins_ip.txt
 #               cat jenkins_ip.txt
