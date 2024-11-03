@@ -4,83 +4,37 @@ resource "aws_instance" "rs-task-bastion_host" {
   subnet_id                   = aws_subnet.TFpublic-a.id
   security_groups             = [aws_security_group.rs-task-bastion.id]
   key_name                    = aws_key_pair.rs-task-tf-ssh-key.key_name
+  depends_on                  = [aws_instance.rs-task-k3s-master]
   associate_public_ip_address = true
 
+  user_data = <<-EOF
+
+            #  # install_ssh_key
+            # mkdir -p ~/.ssh
+            # echo '${tls_private_key.rs-task-tf-ssh-key.public_key_openssh}' >> ~/.ssh/authorized_keys
+            # chmod 600 ~/.ssh/authorized_keys
+
+            # install_nginx
+            echo "install_nginx"
+            sudo apt update
+            sudo apt install -y nginx
+            sudo systemctl start nginx
+            sudo systemctl enable nginx
+            echo "end install_nginx"
+           
+            # configure_nginx
+            mv /opt/Jenkins/conf/jenkins.conf /etc/nginx/sites-available/jenkins.conf
+            JENKINS_IP=$(cat jenkins_ip.txt)
+            sudo sed -i 's|<JENKINS_PRIVATE_IP>|$JENKINS_IP|g' /etc/nginx/sites-available/jenkins.conf
+            sudo ln -s /etc/nginx/sites-available/jenkins.conf /etc/nginx/sites-enabled/
+            sudo nginx -t
+            sudo systemctl restart nginx
+            EOF
+
   tags = {
-    Terraform = "true"
+    Terraform = true
     Project   = var.project
-    Owner     = var.user_owner
-    Name      = "rs-task-bastion-host"
-  }
-}
-
-
-resource "null_resource" "install_ssh_key" {
-  depends_on = [aws_instance.rs-task-bastion_host]
-
-  provisioner "remote-exec" {
-    inline = [
-      "mkdir -p ~/.ssh",
-      "echo '${tls_private_key.rs-task-tf-ssh-key.public_key_openssh}' >> ~/.ssh/authorized_keys",
-      "chmod 600 ~/.ssh/authorized_keys"
-    ]
-  }
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu" 
-      private_key = tls_private_key.rs-task-tf-ssh-key.private_key_pem
-      host        = aws_instance.rs-task-bastion_host.public_ip
-    }
-}
-
-resource "null_resource" "install_nginx" {
-  depends_on = [aws_instance.rs-task-bastion_host]
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update",
-      "sudo apt install -y nginx",
-      "sudo systemctl start nginx",
-      "sudo systemctl enable nginx"
-    ]
-  }
-      connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file("rs-task-key.pem")
-      host        = aws_instance.rs-task-bastion_host.public_ip
-    }
-}
-
-resource "null_resource" "configure_nginx" {
-  depends_on = [null_resource.install_nginx]
-
-  provisioner "file" {
-    source      = "jenkins.conf"  
-    destination = "/etc/nginx/sites-available/jenkins.conf"
-    
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file("rs-task-key.pem")
-      host        = aws_instance.rs-task-bastion_host.public_ip
-    }
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo ln -s /etc/nginx/sites-available/jenkins.conf /etc/nginx/sites-enabled/",
-      "sudo nginx -t",
-      "sudo systemctl restart nginx"
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file("rs-task-key.pem")
-      host        = aws_instance.rs-task-bastion_host.public_ip
-    }
+    Name      = "rs-task-bastion_host"
   }
 }
 
