@@ -14,6 +14,26 @@ resource "aws_instance" "rs-task-bastion_host" {
   }
 }
 
+
+resource "null_resource" "install_ssh_key" {
+  depends_on = [aws_instance.rs-task-bastion_host]
+
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p ~/.ssh",
+      "echo '${tls_private_key.rs-task-tf-ssh-key.public_key_openssh}' >> ~/.ssh/authorized_keys",
+      "chmod 600 ~/.ssh/authorized_keys"
+    ]
+  }
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu" 
+      private_key = tls_private_key.rs-task-tf-ssh-key.private_key_pem
+      host        = aws_instance.rs-task-bastion_host.public_ip
+    }
+}
+
 resource "null_resource" "install_nginx" {
   depends_on = [aws_instance.rs-task-bastion_host]
 
