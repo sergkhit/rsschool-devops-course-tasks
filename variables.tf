@@ -10,6 +10,18 @@ variable "aws_region" {
 #   type        = string
 # }
 
+variable "aws_instance_pub" {
+  description = "instance_type"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "aws_instance_k3s" {
+  description = "instance_type"
+  type        = string
+  default     = "t3.small"
+}
+
 variable "aws_id" {
   description = "AWS account ID"
   type        = string
