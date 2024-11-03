@@ -29,7 +29,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               sudo mkdir -p /data/jenkins-volume
               sudo chown -R 1000:1000 /data/jenkins-volume
               # download config files
-              
+              wget -P /opt/Jenkins/conf https://raw.githubusercontent.com/VasylKhytrych/DevOps_course_Vasylkh_2024/refs/heads/task_4_vasylk/task_4_dir/jenkins_config/jenkins-volume.yaml
               # cd /opt/Jenkins/conf
               # kubectl apply -f jenkins-volume.yaml
               # kubectl apply -f jenkins-sa.yaml
