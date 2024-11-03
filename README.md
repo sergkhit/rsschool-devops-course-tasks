@@ -1,3 +1,18 @@
+
+
+
+
+Please, don't review my task 4 before 7 October (Thursday). Need some time. Thanks!
+
+
+
+
+
+
+
+
+
+
 Project: rolling-scopes-school. 
 
 Task 4: Jenkins Installation and Configuration

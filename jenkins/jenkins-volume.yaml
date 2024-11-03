@@ -1,4 +1,3 @@
----
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -7,12 +6,12 @@ metadata:
 spec:
   storageClassName: jenkins-pv
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   capacity:
-    storage: 10Gi
+    storage: 4Gi
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/data
+    path: /data/jenkins-volume/
 
 ---
 apiVersion: storage.k8s.io/v1

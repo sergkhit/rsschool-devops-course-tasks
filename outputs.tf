@@ -59,7 +59,7 @@ output "public_server_a_private_ip" {
   value       = aws_instance.rs-task-public_server-a.private_ip
 }
 
-output "bastion_private_ip" {
-  description = "private IP of the bastion server"
-  value       = aws_instance.rs-task-bastion_host.private_ip
-}
+# output "bastion_private_ip" {
+#   description = "private IP of the bastion server"
+#   value       = aws_instance.rs-task-bastion_host.private_ip
+# }
