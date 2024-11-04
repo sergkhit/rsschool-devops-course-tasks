@@ -8,10 +8,13 @@ resource "aws_instance" "rs-task-public_server-a" {
 
   user_data = <<-EOF
               #!/bin/bash
-              curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server \
-                --token=${random_password.k3s_token.result} \
-                # --disable traefik
-                --kube-apiserver-arg "bind-address=0.0.0.0"
+
+              # curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server \
+              #   --token=${random_password.k3s_token.result} \
+              #   --disable traefik
+
+              curl -sfL https://get.k3s.io | --token=${random_password.k3s_token.result} sh -s - server --kube-apiserver-arg "bind-address=0.0.0.0"
+
               chmod 644 /etc/rancher/k3s/k3s.yaml
               sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
               export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
@@ -19,10 +22,13 @@ resource "aws_instance" "rs-task-public_server-a" {
               # Install Helm
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-              kubectl create ns jenkins
+              # create namespace jenkins for Jenkins
+              kubectl create namespace jenkins
 
+              # fix Jenkins pod start problem
               sudo mkdir /data/jenkins -p
               sudo chown -R 1000:1000 /data/jenkins
+
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task4/jenkins/jenkins-volume.yaml 
               kubectl apply -f jenkins-volume.yaml
 
@@ -34,6 +40,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task4/jenkins/jenkins-values.yaml
               kubectl apply -f jenkins-values.yaml
 
+              # Add repo for Jenkins
               helm repo add jenkinsci https://charts.jenkins.io
               helm repo update
               helm search repo jenkinsci
@@ -69,7 +76,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               # # sudo mkdir -p /data/jenkins-volume
               # sudo chown -R 1000:1000 /data/jenkins-volume
             
-              # # get pass
+              # get pass
               mkdir -p /root/conf
               ln -s /opt/Jenkins/conf /root/conf
               jsonpath="{.data.jenkins-admin-password}"
