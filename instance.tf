@@ -45,7 +45,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm repo update
               helm search repo jenkinsci
               chart=jenkinsci/jenkins
-              helm install jenkins -n jenkins -f jenkins-values.yaml $chart
+              helm install jenkins -n jenkins -f jenkins-values.yaml $chart --set jenkins.service.nodePort=32000
 
               # # create namespace jenkins for Jenkins
               # kubectl create namespace jenkins 
