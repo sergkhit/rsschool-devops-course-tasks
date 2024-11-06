@@ -9,24 +9,22 @@ resource "aws_instance" "rs-task-public_server-a" {
   user_data = <<-EOF
               #!/bin/bash
               hostnamectl set-hostname "master-k3s"
-              sudo apt-get update -y
-              sudo apt-get install -y apt-transport-https
+              # install k3s
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
               export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-              # sudo mkdir -p ~/.kube
-              # sudo chmod 644 /etc/rancher/k3s/k3s.yaml
-              # sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
-              # sudo chown $(id -u):$(id -g) ~/.kube/config
-              # sudo systemctl restart k3s
               sudo chmod 644 /etc/rancher/k3s/k3s.yaml
-              # kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+              # install Helm
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+              # install Nginx
+              echo "install Nginx"
               helm repo add bitnami https://charts.bitnami.com/bitnami
               helm install my-nginx bitnami/nginx
               # Check and after uninstall Nginx
+              echo "iCheck and after uninstall Nginx"
               kubectl get pods --namespace default
               helm uninstall my-nginx --namespace default
               kubectl get pods --namespace default
+              # install Jenkins
               kubectl create namespace jenkins
               sudo mkdir /data/jenkins -p
               sudo chown -R 1000:1000 /data/jenkins
@@ -44,26 +42,18 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm search repo jenkinsci
               chart=jenkinsci/jenkins
               helm install jenkins -n jenkins -f jenkins-values.yaml $chart
+              sleep 30
               mkdir -p /root/conf
-              ln -s /opt/Jenkins/conf /root/conf
+              sudo ln -s /opt/Jenkins/conf /root/conf
+              # Retrieve the Jenkins admin password and save to a file
               jsonpath="{.data.jenkins-admin-password}"
               secret=$(kubectl get secret -n jenkins jenkins -o jsonpath="$jsonpath")
               echo "$secret" | base64 --decode > /root/conf/jenkins.txt
-
-              # Create Jenkins freestyle project
+              sudo cat /root/conf/jenkins.txt
               JENKINS_URL="http://localhost:32000"
               JENKINS_USER="admin"
               JENKINS_PASS=$(cat /root/conf/jenkins.txt)
-
-              # Wait for Jenkins to be ready
-              while ! curl -s -u "$JENKINS_USER:$JENKINS_PASS" "$JENKINS_URL/login" > /dev/null; do
-                  echo "Waiting for Jenkins to be ready..."
-                  sleep 5
-              done
-              curl -X POST -u "$JENKINS_USER:$JENKINS_PASS" "$JENKINS_URL/createItem?name=HelloWorld" \
-              --data "<project><description>Hello World Job</description><builders><hudson.tasks.Shell><command>echo 'Hello World'</command></hudson.tasks.Shell></builders></project>" \
-              -H "Content-Type: application/xml"
-   
+              echo cat /root/conf/jenkins.txt
               EOF
 
   user_data_replace_on_change = true

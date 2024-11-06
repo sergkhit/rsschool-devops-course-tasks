@@ -76,7 +76,7 @@ resource "aws_security_group" "rs-task-public" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.20.0.0/16"]
     description = "Allow HTTPS SSL/TSL"
   }
 
@@ -100,7 +100,7 @@ resource "aws_security_group" "rs-task-public" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.20.0.0/16"]
     description = "Allow inbound HTTP"
   }
 
@@ -116,16 +116,16 @@ resource "aws_security_group" "rs-task-public" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.20.0.0/16"]
     description = "Allow inbound HTTPS"
   }
 
-  # Allowing SSH access from the bastion host 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow SSH access from the bastion host "
   }
 
   egress {
@@ -177,7 +177,7 @@ resource "aws_security_group" "rs-task-private" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.20.0.0/16"]
     description = "Allow inbound HTTP"
   }
 
@@ -185,7 +185,7 @@ resource "aws_security_group" "rs-task-private" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.20.0.0/16"]
     description = "Allow inbound HTTPS"
   }
 
