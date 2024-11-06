@@ -8,16 +8,27 @@ resource "aws_instance" "rs-task-public_server-a" {
 
   user_data = <<-EOF
               #!/bin/bash
+              curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server \
+                --token=${random_password.k3s_token.result} \
+                --disable traefik
 
-              # curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server \
-              #   --token=${random_password.k3s_token.result} \
-              #   --disable traefik
+              # curl -sfL https://get.k3s.io | --token=${random_password.k3s_token.result} sh -s - server --kube-apiserver-arg "bind-address=0.0.0.0"
+              # chmod 644 /etc/rancher/k3s/k3s.yaml
+              # sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/confi
+              # export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
-              curl -sfL https://get.k3s.io | --token=${random_password.k3s_token.result} sh -s - server --kube-apiserver-arg "bind-address=0.0.0.0"
 
-              chmod 644 /etc/rancher/k3s/k3s.yaml
+              # Wait for k3s to be ready
+              while ! kubectl get nodes; do
+                echo "Waiting for k3s to be ready..."
+                sleep 10
+              done
+
+              # Setup kubeconfig
+              sudo mkdir -p ~/.kube
+              sudo chmod 644 /etc/rancher/k3s/k3s.yaml
               sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
-              export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+              sudo chown $(id -u):$(id -g) ~/.kube/config
 
               # Install Helm
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
@@ -46,6 +57,8 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm search repo jenkinsci
               chart=jenkinsci/jenkins
               helm install jenkins -n jenkins -f jenkins-values.yaml $chart --set jenkins.service.nodePort=32000
+
+              kubectl --namespace jenkins port-forward svc/Jenkins 8080:8080
 
               # # create namespace jenkins for Jenkins
               # kubectl create namespace jenkins 
