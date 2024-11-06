@@ -19,4 +19,5 @@ kind: StorageClass
 metadata:
   name: jenkins-pv
 provisioner: kubernetes.io/no-provisioner
+reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer

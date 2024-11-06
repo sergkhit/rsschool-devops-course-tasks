@@ -8,110 +8,61 @@ resource "aws_instance" "rs-task-public_server-a" {
 
   user_data = <<-EOF
               #!/bin/bash
-              curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server \
-                --token=${random_password.k3s_token.result} \
-                --disable traefik
-
-              # curl -sfL https://get.k3s.io | --token=${random_password.k3s_token.result} sh -s - server --kube-apiserver-arg "bind-address=0.0.0.0"
-              # chmod 644 /etc/rancher/k3s/k3s.yaml
+              hostnamectl set-hostname "master-k3s"
+              sudo apt-get update -y
+              sudo apt-get install -y apt-transport-https
+              curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
+              export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+              # sudo mkdir -p ~/.kube
+              # sudo chmod 644 /etc/rancher/k3s/k3s.yaml
               # sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
-              # export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-
-
-              # Wait for k3s to be ready
-              while ! kubectl get nodes; do
-                echo "Waiting for k3s to be ready..."
-                sleep 10
-              done
-
-              # Setup kubeconfig
-              sudo mkdir -p ~/.kube
+              # sudo chown $(id -u):$(id -g) ~/.kube/config
+              # sudo systemctl restart k3s
               sudo chmod 644 /etc/rancher/k3s/k3s.yaml
-              sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
-              sudo chown $(id -u):$(id -g) ~/.kube/config
-              sudo systemctl restart k3s
-
-              # Install Helm
+              # kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
-              # create namespace jenkins for Jenkins
+              helm repo add bitnami https://charts.bitnami.com/bitnami
+              helm install my-nginx bitnami/nginx
+              # Check and after uninstall Nginx
+              kubectl get pods --namespace default
+              helm uninstall my-nginx --namespace default
+              kubectl get pods --namespace default
               kubectl create namespace jenkins
-
-              # fix Jenkins pod start problem
               sudo mkdir /data/jenkins -p
               sudo chown -R 1000:1000 /data/jenkins
-
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task4/jenkins/jenkins-volume.yaml 
               kubectl apply -f jenkins-volume.yaml
-
-              # Create Custom Account for Jenkins
-              curl https://raw.githubusercontent.com/jenkins-infra/jenkins.io/master/content/doc/tutorials/kubernetes/installing-jenkins-on-kubernetes/jenkins-sa.yaml >> ~/jenkins-sa.yaml
+              sudo mkdir -p /data/jenkins-volume/
+              sudo chown -R 1000:1000 /data/jenkins-volume/
+              kubectl get pv
+              kubectl get storageclass
+              wget https://raw.githubusercontent.com/jenkins-infra/jenkins.io/master/content/doc/tutorials/kubernetes/installing-jenkins-on-kubernetes/jenkins-sa.yaml
               kubectl apply -f jenkins-sa.yaml
-
-              # Create Custom Configuration for Jenkins
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task4/jenkins/jenkins-values.yaml
-              kubectl apply -f jenkins-values.yaml
-
-              # Add repo for Jenkins
               helm repo add jenkinsci https://charts.jenkins.io
               helm repo update
               helm search repo jenkinsci
               chart=jenkinsci/jenkins
-              helm install jenkins -n jenkins -f jenkins-values.yaml $chart --set jenkins.service.nodePort=32000
-
-              kubectl --namespace jenkins port-forward svc/Jenkins 8080:8080
-
-              # # create namespace jenkins for Jenkins
-              # kubectl create namespace jenkins 
-
-              # # # fix Jenkins pod start problem
-              # # sudo mkdir -p /data/jenkins-volume
-              # # sudo chown -R 1000:1000 /data/jenkins-volume
-
-              # # download config files
-              # wget -P /opt/Jenkins/conf https://github.com/sergkhit/rsschool-devops-course-tasks/blob/task4/jenkins/jenkins-volume.yaml
-              # wget -P /opt/Jenkins/conf https://github.com/sergkhit/rsschool-devops-course-tasks/blob/task4/jenkins/jenkins-sa.yaml
-              # wget -P /opt/Jenkins/conf https://github.com/sergkhit/rsschool-devops-course-tasks/blob/task4/jenkins/jenkins-values.yaml
-
-              # # Add repo for Jenkins
-              # sleep 300
-              # helm repo add jenkins https://charts.jenkins.io
-              # helm repo update
-
-              # # install jenkins
-              # # chart=jenkinsci/jenkins
-              # cd /opt/Jenkins/conf
-              # kubectl apply -f jenkins-volume.yaml -n jenkins
-              # kubectl apply -f jenkins-sa.yaml -n jenkins
-              # # helm install jenkins -n jenkins -f jenkins-values.yaml $chart
-              # helm install jenkins jenkins/jenkins -n jenkins -f jenkins-values.yaml
-       
-              # # fix Jenkins pod start problem
-              # # sudo mkdir -p /data/jenkins-volume
-              # sudo chown -R 1000:1000 /data/jenkins-volume
-            
-              # get pass
+              helm install jenkins -n jenkins -f jenkins-values.yaml $chart
               mkdir -p /root/conf
               ln -s /opt/Jenkins/conf /root/conf
               jsonpath="{.data.jenkins-admin-password}"
               secret=$(kubectl get secret -n jenkins jenkins -o jsonpath="$jsonpath")
               echo "$secret" | base64 --decode > /root/conf/jenkins.txt
 
-              # # Create Jenkins freestyle project
-              # JENKINS_URL="http://localhost:8080"
-              # JENKINS_USER="admin"
-              # JENKINS_PASS=$(cat /root/conf/jenkins.txt)
+              # Create Jenkins freestyle project
+              JENKINS_URL="http://localhost:32000"
+              JENKINS_USER="admin"
+              JENKINS_PASS=$(cat /root/conf/jenkins.txt)
 
-              # # Wait for Jenkins to be ready
-              # while ! curl -s -u "$JENKINS_USER:$JENKINS_PASS" "$JENKINS_URL/login" > /dev/null; do
-              #     echo "Waiting for Jenkins to be ready..."
-              #     sleep 5
-              # done
-
-              # # Create freestyle job
-              # curl -X POST -u "$JENKINS_USER:$JENKINS_PASS" "$JENKINS_URL/createItem?name=HelloWorld" \
-              # --data "<project><description>Hello World Job</description><builders><hudson.tasks.Shell><command>echo 'Hello World'</command></hudson.tasks.Shell></builders></project>" \
-              # -H "Content-Type: application/xml"
+              # Wait for Jenkins to be ready
+              while ! curl -s -u "$JENKINS_USER:$JENKINS_PASS" "$JENKINS_URL/login" > /dev/null; do
+                  echo "Waiting for Jenkins to be ready..."
+                  sleep 5
+              done
+              curl -X POST -u "$JENKINS_USER:$JENKINS_PASS" "$JENKINS_URL/createItem?name=HelloWorld" \
+              --data "<project><description>Hello World Job</description><builders><hudson.tasks.Shell><command>echo 'Hello World'</command></hudson.tasks.Shell></builders></project>" \
+              -H "Content-Type: application/xml"
    
               EOF
 

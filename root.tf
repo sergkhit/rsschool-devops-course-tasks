@@ -4,7 +4,7 @@ provider "aws" {
 }
 
 resource "random_password" "k3s_token" {
-  length  = 16
+  length  = 32
   special = false
   upper   = false
   lower   = true
