@@ -14,7 +14,7 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               # curl -sfL https://get.k3s.io | --token=${random_password.k3s_token.result} sh -s - server --kube-apiserver-arg "bind-address=0.0.0.0"
               # chmod 644 /etc/rancher/k3s/k3s.yaml
-              # sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/confi
+              # sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
               # export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
 
@@ -29,6 +29,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               sudo chmod 644 /etc/rancher/k3s/k3s.yaml
               sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
               sudo chown $(id -u):$(id -g) ~/.kube/config
+              sudo systemctl restart k3s
 
               # Install Helm
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
