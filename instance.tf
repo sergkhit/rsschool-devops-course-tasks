@@ -11,8 +11,12 @@ resource "aws_instance" "rs-task-public_server-a" {
               hostnamectl set-hostname "master-k3s"
               # install k3s
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
+              sleep 30  # wait K3s start
               export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
               sudo chmod 644 /etc/rancher/k3s/k3s.yaml
+              # Set KUBECONFIG variable
+              sudo su -c 'echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> /root/.bashrc'
+              source ~/.bashrc
               # install Helm
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
               # install Nginx
@@ -20,7 +24,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm repo add bitnami https://charts.bitnami.com/bitnami
               helm install my-nginx bitnami/nginx
               # Check and after uninstall Nginx
-              echo "iCheck and after uninstall Nginx"
+              echo "Check and after uninstall Nginx"
               kubectl get pods --namespace default
               helm uninstall my-nginx --namespace default
               kubectl get pods --namespace default
