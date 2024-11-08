@@ -1,10 +1,25 @@
+
+
+
+
+
+
+Please do not check task5 until November 15th (Saturday) - I need a little more time to complete it.
+
+
+
+
+
+
+
+
 Project: rolling-scopes-school. 
 
-Task 4: Jenkins Installation and Configuration
+Task 5: Simple Application Deployment with Helm 
 
-In this task, you will install Jenkins CI server on your Kubernetes (K8s) cluster using Helm and configure it to be accessible via internet. IMPORTANT! You better choose to use t3/t2.small VMs, since micro have not sufficient amount of RAM for running Jenkins. Be aware that small instances are not included in the free tier, so you'll be charged 0.05$/hour for them. Best choise for saving - create 1 small instalnce in public network. Setup init script to install k3s and deploy all of the necessary HELM charts to startup jenkins. Destroy environment whenever you are not working with it. Have a look at this JCasC article to store jenkins configuration and jobs as s code.
+In this task, you will create a Helm chart for a simple application and deploy it on your Kubernetes (K8s) cluster. (WordPress)
 
-https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-configuration/task_4.md
+https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-configuration/task_5.md
 
 ===========================================================
 
@@ -59,19 +74,24 @@ variables.tf: file defines input variables for Terraform configuration.
 
 Clone the repository Clone the repository and navigate to the project directory:
 
+```bash
 git clone git@github.com:sergkhit/rsschool-devops-course-tasks.git
 cd rsschool-devops-course-tasks
-git branch task_4
+git branch task_5
+```
 
 Initialize Terraform:
 
+```bash
 terraform init
+```
 
 Plan and Apply Changes:
 
+```bash
 terraform plan
-
 terraform apply
+```
 
 -------------------------------
 
@@ -111,7 +131,11 @@ connect to k3s master and get info from file:
 ```bash
 cat /etc/rancher/k3s/k3s.yaml
 ```
-on local mashine put this info in config "vi ~/.kube/config"
+on local mashine put this info in config 
+
+```bash
+vi ~/.kube/config
+```
 
 after create tunnel for kubectl:
 
@@ -126,7 +150,7 @@ kubectl get nodes
 kubectl get pods -n jenkins
 ```
 **Access Jenkins:**
-   we should be able to access Jenkins via the public IP of our master node - you may see it in output.
+We should be able to access Jenkins via the public IP of our master node - you may see it in output.
 
 Open a web browser and navigate to http://<master_node_public_ip>:32000. You should see the Jenkins setup wizard.
 
@@ -191,36 +215,30 @@ kubectl get svc
 ## Evaluation Criteria (100 points for covering all criteria)
 
 ------------------------------
-Helm Installation and Verification (10 points) - ok (10) 
+Helm Chart Creation (40 points) - ok (40) 
 
-Helm is installed and verified by deploying the Nginx chart.
+A Helm chart for the WordPress application is created.
 ------------------------------
-Cluster Requirements (10 points) - ok (10) 
+Application Deployment (30 points) - ok (30) 
 
-The cluster has a solution for managing persistent volumes (PV) and persistent volume claims (PVC).
+The application is deployed using the Helm chart.
+The application is accessible from the internet.
 ------------------------------
-Jenkins Installation (50 points) - ok (10) 
+Repository Submission (5 points) - ok (5) 
 
-Jenkins is installed using Helm in a separate namespace.
-Jenkins is available from the internet.
+A new repository is created with the WordPress and Helm chart.
 ------------------------------
-Jenkins Configuration (10 points) - ok (10) 
+Verification (5 points) - ok (5) 
 
-Jenkins configuration is stored on a persistent volume and is not lost when Jenkins' pod is terminated.
+The application is verified to be running and accessible.
 ------------------------------
-Verification (10 points) - ok (10) 
+Additional Tasks (20 points) - ok (20) 
 
-A simple Jenkins freestyle project is created and runs successfully, writing "Hello world" into the log.
+CI/CD Pipeline (10 points)
+A CI/CD pipeline is set up to automate the deployment of the application.
+
+Documentation (10 points)
+The application setup and deployment process are documented in a README file.
 ------------------------------
-Additional Tasks (10 points) - ok (10) 
-
-GitHub Actions (GHA) Pipeline (5 points) 
-A GHA pipeline is set up to deploy Jenkins.
-
-Authentication and Security (5 points) 
-Authentication and security settings are configured for Jenkins.
-
------------------------------
-Pts calc
- 
- 10+60+10+10+10 = 100
+------------------------------
+Pts calc: 40+30+5+5+20 = 100
