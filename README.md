@@ -72,6 +72,9 @@ root.tf : main configuration file the core infrastructure and providers.
 variables.tf: file defines input variables for Terraform configuration.
 
 
+Additionally, for installing WordPress, https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress
+repository has been created, where wordpres can be configured for installation via helm.
+
 ===========================================================
 
 ## How to Use
@@ -150,42 +153,28 @@ ssh -i rs-task-key.pem -fNL 6443:ip_k3s_master:6443 ubuntu@ip_bastion
 **Upgrading WordPress Chart**
 
 To upgrade the wordpress Helm chart with new values or chart updates, use:
+
 ```bash
 helm upgrade wordpress /home/ubuntu/helm --namespace default
 ```
 **Uninstalling WordPress Chart**
 
 To uninstall the wordpress Helm chart and remove all associated resources, use:
+
 ```bash
 helm uninstall wordpress --namespace default
 ```
 
-**Monitoring and Logs**
-
-To check the status of the wordpress deployment, use:
-```bash
-kubectl get deployment wordpress -n default
-```
-To view the status of pods associated with wordpress, use:
-```bash
-kubectl get pods -n default
-```
-To view logs of the wordpress pod, first identify the pod name, then use:
-```bash
-kubectl logs <wordpress-pod> -n default
-```
-To follow the logs in real-time, use:
-```bash
-kubectl logs -f <wordpress-pod> -n default
-```
-
-**Verify other info in the cluster:**
+**Verify info in the cluster:**
 
 ```bash
 kubectl get nodes
+kubectl get pods -n default
 kubectl get pv
 kubectl get pvc 
 kubectl get svc
+kubectl get deployment wordpress -n default
+kubectl logs <wordpress-pod> -n default
 ```
 
 ===========================================================
