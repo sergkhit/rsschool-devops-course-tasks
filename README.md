@@ -147,70 +147,44 @@ after create tunnel for kubectl:
 ssh -i rs-task-key.pem -fNL 6443:ip_k3s_master:6443 ubuntu@ip_bastion
 ```
 
-**Verify the Cluster and Jenkins:**
+**Upgrading WordPress Chart**
+
+To upgrade the wordpress Helm chart with new values or chart updates, use:
+```bash
+helm upgrade wordpress /home/ubuntu/helm --namespace default
+```
+**Uninstalling WordPress Chart**
+
+To uninstall the wordpress Helm chart and remove all associated resources, use:
+```bash
+helm uninstall wordpress --namespace default
+```
+
+**Monitoring and Logs**
+
+To check the status of the wordpress deployment, use:
+```bash
+kubectl get deployment wordpress -n default
+```
+To view the status of pods associated with wordpress, use:
+```bash
+kubectl get pods -n default
+```
+To view logs of the wordpress pod, first identify the pod name, then use:
+```bash
+kubectl logs <wordpress-pod> -n default
+```
+To follow the logs in real-time, use:
+```bash
+kubectl logs -f <wordpress-pod> -n default
+```
+
+**Verify other info in the cluster:**
 
 ```bash
 kubectl get nodes
-kubectl get pods -n jenkins
-```
-**Access Jenkins:**
-We should be able to access Jenkins via the public IP of our master node - you may see it in output.
-
-Open a web browser and navigate to http://<master_node_public_ip>:32000. You should see the Jenkins setup wizard.
-
-**Unlock Jenkins:**
-    You’ll need the initial admin password to unlock Jenkins. Retrieve it by running:
-
-```bash
-kubectl exec --namespace jenkins -it svc/jenkins -c jenkins -- /bin/cat /run/secrets/additional/chart-admin-password && echo
-```
-
-Copy the password and paste it into the Jenkins setup wizard to unlock Jenkins.
-
-**Create a Freestyle Project:**
-  Create a new Freestyle project:
-- Name it something like "Hello World".
-- In the build section, add an "Execute shell" build step with the following command:
-
-```bash
-echo "Hello world"
-```
-- Save the project and run it.
-
-**Verify the Freestyle Project Build Output:**
-    After running the job, check the console output to ensure it shows "Hello world".
-
-**Check Persistent Volume Configuration:**
-    Ensure that the persistent volume (PV) and persistent volume claim (PVC) were created successfully:
-
-```bash
 kubectl get pv
-kubectl get pvc -n jenkins
-```
- **Verify your Helm installation by deploying and removing the Nginx chart from Bitnami:**
-First, install the Nginx chart using Helm. You can run the following command to deploy the Nginx server:
-
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install my-nginx bitnami/nginx
-```
-
-Verify the Deployment:
-
-```bash
-kubectl get pods --namespace default
-```
-
-Remove the Nginx Chart:
-
-```bash
-helm uninstall my-nginx --namespace default
-```
-
-Check that the Nginx resources have been removed:
-
-```bash
-kubectl get pods --namespace default
+kubectl get pvc 
 kubectl get svc
 ```
 

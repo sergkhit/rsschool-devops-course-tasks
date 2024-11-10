@@ -32,7 +32,7 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               # Install WordPress using Helm
               # helm install task5-wordpress /home/ubuntu/helm/wordpress --set wordpress.service.nodePort=32000
-              helm install task5-wordpress /home/ubuntu/helm/wordpress
+              helm install task5-wordpress /home/ubuntu/helm/wordpress --namespace default
 
 
               # # WP install on initialization
