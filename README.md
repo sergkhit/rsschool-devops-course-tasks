@@ -1,22 +1,3 @@
-
-
-
-
-
-
-**Please do not check task5 until November 15th (Saturday).**
-
-**Need a little more time to complete it.**
-
-
-===========================================================
-===========================================================
-===========================================================
-
-
-
-
-
 Project: rolling-scopes-school. 
 
 Task 5: Simple Application Deployment with Helm 
