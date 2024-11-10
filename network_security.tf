@@ -124,7 +124,7 @@ resource "aws_security_group" "rs-task-public" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["10.20.0.0/16"]
+    cidr_blocks = ["0.0.0.0/0"]
     description = "Allow SSH access from the bastion host "
   }
 
