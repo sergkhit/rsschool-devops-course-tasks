@@ -83,7 +83,7 @@ resource "aws_instance" "rs-task-public_server-a" {
 #                 --disable traefik
 #               chmod 644 /etc/rancher/k3s/k3s.yaml
 #               export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-       
+
 #               EOF
 
 #   user_data_replace_on_change = true
