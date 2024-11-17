@@ -66,7 +66,7 @@ Clone the repository Clone the repository and navigate to the project directory:
 ```bash
 git clone git@github.com:sergkhit/rsschool-devops-course-tasks.git
 cd rsschool-devops-course-tasks
-git branch task_5
+git branch task6
 ```
 
 Initialize Terraform:
