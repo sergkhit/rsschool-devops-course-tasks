@@ -85,4 +85,7 @@ variable "k8s_subdomain_name" {
   default = "k8s.example.com"
 }
 
-
+variable "aws_user" {
+  type    = string
+  default = "khitRS"
+}

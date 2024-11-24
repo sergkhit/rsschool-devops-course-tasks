@@ -156,13 +156,60 @@ resource "aws_iam_instance_profile" "ssm_instance_profile" {
   role = aws_iam_role.ssm_role.name
 }
 
-# Create ECR repository rs_task_wordpress_repo
-resource "aws_ecr_repository" "rs_task_wordpress_repo" {
-  name = "rs_task_wordpress_repo"
+# For IAM role EC2 we give access to ECR
+resource "aws_iam_policy" "ecr_access_policy" {
+  name        = "ECRAccessPolicy"
+  description = "Policy to allow ECR actions for khitRS user"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:CreateRepository",
+          "ecr:DescribeRepositories",
+          "ecr:DeleteRepository",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "ecr_access_user" {
+  user       = var.aws_user
+  policy_arn = aws_iam_policy.ecr_access_policy.arn
 }
 
 # For IAM role EC2 we give access to ECR
 resource "aws_iam_role_policy_attachment" "ecr_access" {
   role       = aws_iam_role.role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+}
+
+# For IAM role EC2 we give create access to ECR
+resource "aws_iam_user_policy" "ecr_create_repo" {
+  name = "ECRCreateRepoPolicy"
+  user = var.aws_user
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["ecr:CreateRepository"]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Create ECR repository rs_task_wordpress_repo
+resource "aws_ecr_repository" "rs_task_wordpress_repo" {
+  name = "rs_task_wordpress_repo"
 }
