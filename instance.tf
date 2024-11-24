@@ -82,6 +82,13 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 30
               mkdir -p /root/conf
               sudo ln -s /opt/Jenkins/conf /root/conf
+
+
+              sleep 60
+              # add sonarqube in jenkins
+              kubectl exec -n jenkins svc/jenkins -c jenkins -- /bin/bash -c "jenkins-plugin-cli --plugins sonar"
+              kubectl rollout restart statefulset jenkins -n jenkins
+              sleep 120
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Jenkinsfile
 
               # Download Dockerfile
@@ -96,10 +103,6 @@ resource "aws_instance" "rs-task-public_server-a" {
               JENKINS_USER="admin"
               JENKINS_PASS=$(cat /root/conf/jenkins.txt)
               echo cat /root/conf/jenkins.txt
-             
-              # add sonarqube in jenkins
-              kubectl exec -n jenkins svc/jenkins -c jenkins -- /bin/bash -c "jenkins-plugin-cli --plugins sonar"
-              kubectl rollout restart statefulset my-jenkins -n jenkins
               EOF
 
   user_data_replace_on_change = true
