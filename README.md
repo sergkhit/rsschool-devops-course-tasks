@@ -22,15 +22,30 @@ https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-c
 
 ├── backend.tf
 ├── bastion_host.tf
+├── Dockerfile
+├── helm-chart
+│   ├── Chart.yaml
+│   ├── templates
+│   │   ├── db-depl.yaml
+│   │   ├── db-pvc.yaml
+│   │   ├── db-service.yaml
+│   │   ├── deployment.yaml
+│   │   ├── pvc.yaml
+│   │   └── service.yaml
+│   └── values.yaml
 ├── iam.tf
 ├── instance.tf
+├── jenkins
+│   ├── jenkins-sa.yaml
+│   ├── jenkins-values.yaml
+│   └── jenkins-volume.yaml
+├── Jenkinsfile
 ├── nacl.tf
 ├── network_security.tf
 ├── network.tf
 ├── outputs.tf
 ├── README.md
 ├── root.tf
-├── screenshots
 └── variables.tf
 
 
@@ -43,6 +58,14 @@ screenshots/: directory contains resources and works screenshots.
 .github/workflows/terrform.yaml: GitHub-specific files,  workflows for GitHub Actions
 
 .gitignore:   file specifies which folders or files should be ignored when tracking changes with Git.
+
+Dockerfile - file for building the Docker image.
+
+helm-chart/ - directory containing the Helm chart for WordPress.
+
+jenkins/ - directory containing the files for configuration Jenkins.
+
+Jenkinsfile - configuration file for the Jenkins Pipeline.
 
 backend.tf:   file contains the S3 resource declarations for terraform backend.
 
@@ -65,12 +88,11 @@ root.tf : main configuration file the core infrastructure and providers.
 variables.tf: file defines input variables for Terraform configuration.
 
 
-Additionally, for installing WordPress, https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress
-repository has been created, where wordpres can be configured for installation via helm.
-
 ===========================================================
 
 ## How to Use
+
+Set up AWS CLI and create the necessary IAM roles.
 
 Clone the repository Clone the repository and navigate to the project directory:
 
@@ -143,20 +165,20 @@ after create tunnel for kubectl:
 ssh -i rs-task-key.pem -fNL 6443:ip_k3s_master:6443 ubuntu@ip_bastion
 ```
 
-** Upgrading WordPress Chart **
+**Set up Jenkins and run the pipeline**
 
-To upgrade the wordpress Helm chart with new values or chart updates, use:
+Running the Pipeline
 
-```bash
-helm upgrade wordpress /home/ubuntu/helm --namespace default
-```
-** Uninstalling WordPress Chart **
+The pipeline is automatically triggered on each commit to the repository.
 
-To uninstall the wordpress Helm chart and remove all associated resources, use:
+**Testing**
 
-```bash
-helm uninstall wordpress --namespace default
-```
+After deployment, you can test the application by sending requests to the API or by opening the main page of WordPress.
+
+**Notifications**
+
+The notification system is configured to alert about the successes or failures of the pipeline execution.
+
 
 **Verify info in the cluster:**
 
@@ -166,8 +188,8 @@ kubectl get pods -n default
 kubectl get pv
 kubectl get pvc 
 kubectl get svc
-kubectl get deployment wordpress -n default
-kubectl logs <wordpress-pod> -n default
+kubectl get deployment <your_deployment> -n default
+kubectl logs <pod> -n default
 ```
 
 ===========================================================
