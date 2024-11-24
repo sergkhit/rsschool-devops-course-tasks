@@ -4,7 +4,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Сборка Docker образа
+                    // docker build
                     sh 'docker build -t wordpress-app .'
                 }
             }
