@@ -1,3 +1,14 @@
+
+
+
+Please do not grade task 6 until the evening of Friday (November 26), I need a little more time. Thank you in advance.
+
+
+
+
+-----------------------------------------------------------------
+
+
 Project: rolling-scopes-school. 
 
 Task 6: Application Deployment via Jenkins Pipeline
