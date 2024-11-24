@@ -9,6 +9,26 @@ resource "aws_instance" "rs-task-public_server-a" {
   user_data = <<-EOF
               #!/bin/bash
               hostnamectl set-hostname "master-k3s"
+              
+              # install Docker
+              apt-get update -y
+              # Install the required packages
+              apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+              # Adding a GPG key for Docker
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+              # Adding a Docker repository
+              add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+              # Install Docker
+              apt-get update -y
+              apt-get install -y docker-ce
+              # Add a user to a Docker group
+              usermod -aG docker $USER
+              # Running Docker
+              systemctl start docker
+              systemctl enable docker
+              # Using newgrp to apply changes
+              newgrp docker
+
               # install k3s
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
               sleep 30  # wait K3s start
