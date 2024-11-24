@@ -112,7 +112,7 @@ resource "aws_security_group" "rs-task-public" {
     description = "Allow inbound for Jenkins"
   }
 
-    ingress {
+  ingress {
     from_port   = 32001
     to_port     = 32001
     protocol    = "tcp"
@@ -150,9 +150,9 @@ resource "aws_security_group" "rs-task-private" {
   vpc_id      = aws_vpc.TFvpc.id
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
     # cidr_blocks = ["10.20.0.0/16"]
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow SSH from bastion-host."
