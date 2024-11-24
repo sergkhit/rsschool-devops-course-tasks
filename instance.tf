@@ -22,7 +22,8 @@ resource "aws_instance" "rs-task-public_server-a" {
               apt-get update -y
               apt-get install -y docker-ce
               # Add a user to a Docker group
-              usermod -aG docker $USER
+              # usermod -aG docker $USER
+              sudo usermod -aG docker $USER
               # Running Docker
               systemctl start docker
               systemctl enable docker
@@ -51,6 +52,15 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
 
+              # install Sonarqube 
+              kubectl create namespace sonarqube
+              helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+              helm repo update
+              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml 
+              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-values.yaml 
+              kubectl apply -f sonarqube-service.yaml 
+              helm install rs-sonarqube sonarqube/sonarqube --namespace sonarqube --set persistence.enabled=true --set persistence.storageClass=local-path --set service.type=LoadBalancer
+
               # install Jenkins
               kubectl create namespace jenkins
               sudo mkdir /data/jenkins -p
@@ -72,6 +82,11 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 30
               mkdir -p /root/conf
               sudo ln -s /opt/Jenkins/conf /root/conf
+              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Jenkinsfile
+
+              # Download Dockerfile
+              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Dockerfile
+
               # Retrieve the Jenkins admin password and save to a file
               jsonpath="{.data.jenkins-admin-password}"
               secret=$(kubectl get secret -n jenkins jenkins -o jsonpath="$jsonpath")
@@ -81,15 +96,10 @@ resource "aws_instance" "rs-task-public_server-a" {
               JENKINS_USER="admin"
               JENKINS_PASS=$(cat /root/conf/jenkins.txt)
               echo cat /root/conf/jenkins.txt
-
-
-
-              # # Clone the WordPress repository
-              # mkdir -p /home/ubuntu/helm
-              # git clone https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress /home/ubuntu/helm
-
-              # # Install WordPress using Helm
-              # helm install task5-wordpress /home/ubuntu/helm/wordpress --namespace default
+             
+              # add sonarqube in jenkins
+              kubectl exec -n jenkins svc/jenkins -c jenkins -- /bin/bash -c "jenkins-plugin-cli --plugins sonar"
+              kubectl rollout restart statefulset my-jenkins -n jenkins
               EOF
 
   user_data_replace_on_change = true

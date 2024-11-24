@@ -24,7 +24,8 @@ The pipeline will cover the software lifecycle phases of build, testing, and dep
 
 https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-configuration/task_6.md
 
-===========================================================
+-----------------------------------------------------------------
+
 
 ├── backend.tf
 ├── bastion_host.tf
@@ -52,7 +53,12 @@ https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-c
 ├── outputs.tf
 ├── README.md
 ├── root.tf
+├── screenshots
+├── sonarqube
+│   ├── sonarqube-service.yaml
+│   └── sonarqube-values.yaml
 └── variables.tf
+
 
 
 ## Project file Structure: 
@@ -70,6 +76,8 @@ Dockerfile - file for building the Docker image.
 helm-chart/ - directory containing the Helm chart for WordPress.
 
 jenkins/ - directory containing the files for configuration Jenkins.
+
+sonarqube/ - directory containing the files for configuration sonarqube.
 
 Jenkinsfile - configuration file for the Jenkins Pipeline.
 
