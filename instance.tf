@@ -103,6 +103,12 @@ resource "aws_instance" "rs-task-public_server-a" {
               JENKINS_USER="admin"
               JENKINS_PASS=$(cat /root/conf/jenkins.txt)
               echo cat /root/conf/jenkins.txt
+
+              # find the public address
+              PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+              echo "Public IP: $PUBLIC_IP"
+              kubectl patch svc jenkins -n jenkins -p '{"spec": {"type": "LoadBalancer"}}'
+              kubectl patch svc sonarqube -n sonarqube -p '{"spec": {"type": "LoadBalancer"}}'
               EOF
 
   user_data_replace_on_change = true
