@@ -174,6 +174,14 @@ resource "aws_security_group" "rs-task-private" {
     description = "Allow NodeJS"
   }
 
+    ingress {
+    from_port   = 30001
+    to_port     = 30001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow NodeJS Piblic"
+  }
+
   ingress {
     from_port   = 443
     to_port     = 443
