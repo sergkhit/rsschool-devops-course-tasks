@@ -1,29 +1,7 @@
-
-wordpress:
-  image:
-    repository: wordpress
-    tag: 5.9
-  replicas: 1
-  serviceType: NodePort
-  port: 80
-  dbHost: wordpress-mysql
-  dbName: wordpress
-  dbUser: wordpress
-  dbPassword: my-secret-password
-
-mysql:
-  enabled: true
-  image:
-    repository: mysql
-    tag: 5.7
-  port: 3306
-  dbRootPassword: root-password
-  dbName: wordpress
-  dbUser: wordpress
-  dbPassword: my-secret-password
-
-persistence:
-  enabled: true
-  storageClassName: local-path
-  accessMode: ReadWriteOnce
-  size: 10Gi
+replicaCount: 1
+image:
+  repository: 905418277051.dkr.ecr.us-east-1.amazonaws.com/nodejs-app-repo
+  pullPolicy: IfNotPresent
+service:
+  type: NodePort
+  port: 3000

@@ -158,8 +158,8 @@ resource "aws_iam_instance_profile" "ssm_instance_profile" {
 
 # # For IAM role EC2 we give access to ECR and create
 
-resource "aws_ecr_repository" "rs_task_wordpress_repo" {
-  name = "rs_task_wordpress_repo"
+resource "aws_ecr_repository" "nodejs-app-repo" {
+  name = "nodejs-app-repo"
 }
 
 

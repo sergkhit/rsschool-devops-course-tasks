@@ -1,36 +1,24 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordpress
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.wordpress.replicas }}
+  replicas: 1
   selector:
     matchLabels:
-      app: wordpress
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: wordpress
+        app: {{ .Release.Name }}
     spec:
       containers:
-        - name: wordpress
-          image: {{ .Values.wordpress.image.repository }}:{{ .Values.wordpress.image.tag }}
+        - name: nodejs-app
+          image: 905418277051.dkr.ecr.us-east-1.amazonaws.com/nodejs-app-repo:latest
           ports:
-            - containerPort: {{ .Values.wordpress.port }}
+            - containerPort: 3000
           env:
-            - name: WORDPRESS_DB_HOST
-              value: {{ .Values.wordpress.dbHost }}
-            - name: WORDPRESS_DB_NAME
-              value: {{ .Values.wordpress.dbName }}
-            - name: WORDPRESS_DB_USER
-              value: {{ .Values.wordpress.dbUser }}
-            - name: WORDPRESS_DB_PASSWORD
-              value: {{ .Values.wordpress.dbPassword }}
-          volumeMounts:
-            - name: wordpress-persistent-storage
-              mountPath: /var/www/html
-      volumes:
-        - name: wordpress-persistent-storage
-          persistentVolumeClaim:
-            claimName: wordpress-pvc
+            - name: APP_SERVER_PORT
+              value: "3000"
