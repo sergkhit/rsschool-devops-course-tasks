@@ -9,6 +9,11 @@ resource "aws_instance" "rs-task-public_server-a" {
   user_data = <<-EOF
               #!/bin/bash
               hostnamectl set-hostname "master-k3s"
+
+              #clone files for jenkins-pipeline and nodejs
+              pwd
+              git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git /home/ubuntu/
+              ls -lha /home/ubuntu/
               
               # install Docker
               apt-get update -y
@@ -89,15 +94,15 @@ resource "aws_instance" "rs-task-public_server-a" {
               kubectl exec -n jenkins svc/jenkins -c jenkins -- /bin/bash -c "jenkins-plugin-cli --plugins sonar"
               kubectl rollout restart statefulset jenkins -n jenkins
               sleep 120
-              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Jenkinsfile
+              #wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Jenkinsfile
 
               # Download Dockerfile
-              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Dockerfile
+              #wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Dockerfile
 
               # Retrieve the Jenkins admin password and save to a file
               jsonpath="{.data.jenkins-admin-password}"
               secret=$(kubectl get secret -n jenkins jenkins -o jsonpath="$jsonpath")
-              echo "$secret" | base64 --decode > /root/conf/jenkins.txt
+              
               sudo cat /root/conf/jenkins.txt
               JENKINS_URL="http://localhost:32000"
               JENKINS_USER="admin"
@@ -107,6 +112,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               # find the public address
               PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
               echo "Public IP: $PUBLIC_IP"
+              echo "$PUBLIC_IP" > /home/ubuntu/public_ip.txt
               kubectl patch svc jenkins -n jenkins -p '{"spec": {"type": "LoadBalancer"}}'
               kubectl patch svc sonarqube -n sonarqube -p '{"spec": {"type": "LoadBalancer"}}'
               EOF

@@ -229,7 +229,78 @@ resource "aws_iam_role_policy_attachment" "ecr_full_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
 }
 
+# add jenkins
+
+resource "aws_iam_role" "jenkins_role" {
+  name = "jenkins_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Effect = "Allow",
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy" "jenkins_policy" {
+  name        = "jenkins_policy"
+  description = "Policy for Jenkins to access ECR and Kubernetes"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload",
+          "ecr:CreateRepository",
+          "ecr:DeleteRepository",
+          "ecr:DescribeRepositories",
+          "ecr:ListImages"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:UpdateClusterConfig",
+          "eks:UpdateClusterVersion",
+          "eks:CreateCluster",
+          "eks:DeleteCluster"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+
 resource "aws_iam_instance_profile" "jenkins_instance_profile" {
   name = "jenkins_instance_profile"
   role = aws_iam_role.role_for_github.name
+}
+
+resource "aws_iam_role_policy_attachment" "jenkins_ecr_access" {
+  role       = aws_iam_role.role_for_github.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "jenkins_policy_attachment" {
+  role       = aws_iam_role.jenkins_role.name
+  policy_arn = aws_iam_policy.jenkins_policy.arn
 }
