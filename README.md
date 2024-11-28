@@ -1,7 +1,7 @@
 
 
 
-Please do not grade task 6 until the evening of Friday (November 26), I need a little more time. Thank you in advance.
+Please do not grade task 6 until the evening of Saturday (November 30), I need a little more time. Thank you in advance.
 
 
 

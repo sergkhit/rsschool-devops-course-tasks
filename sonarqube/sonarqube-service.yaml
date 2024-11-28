@@ -3,16 +3,10 @@ kind: Service
 metadata:
   name: sonarqube
   namespace: sonarqube
-# spec:
-#   type: LoadBalancer
-#   ports:
-#     - port: 9000
-#       targetPort: 9000
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 9000
       targetPort: 9000
-      nodePort: 9000
   selector:
     app: sonarqube
