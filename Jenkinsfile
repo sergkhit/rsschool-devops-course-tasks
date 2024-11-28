@@ -72,7 +72,7 @@ pipeline {
             steps {
                 script {
                     // Deployment to Kubernetes
-                    sh 'helm upgrade --install my-nodejs-app ./helm-chart'
+                    sh 'helm upgrade --install my-nodejs-app ./nodejs-app/helm-chart'
                 }
             }
         }

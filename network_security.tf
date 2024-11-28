@@ -112,12 +112,44 @@ resource "aws_security_group" "rs-task-public" {
     description = "Allow inbound for Jenkins"
   }
 
+    ingress {
+    from_port   = 50000
+    to_port     = 50000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow inbound for Jenkins proxy"
+  }
+
   ingress {
     from_port   = 32001
     to_port     = 32001
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow inbound for Wordpress"
+  }
+
+  ingress {
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow SonarQube"
+  }
+
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow NodeJS"
+  }
+
+  ingress {
+    from_port   = 30001
+    to_port     = 30001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow NodeJS Piblic"
   }
 
   ingress {
@@ -174,7 +206,7 @@ resource "aws_security_group" "rs-task-private" {
     description = "Allow NodeJS"
   }
 
-    ingress {
+  ingress {
     from_port   = 30001
     to_port     = 30001
     protocol    = "tcp"

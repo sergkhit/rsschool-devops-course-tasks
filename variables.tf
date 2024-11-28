@@ -13,13 +13,15 @@ variable "aws_region" {
 variable "aws_instance_pub" {
   description = "instance_type"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.large"
+  # default     = "t2.micro"
 }
 
 variable "aws_instance_k3s" {
   description = "instance_type"
   type        = string
-  default     = "t3.small"
+  default     = "t3.large"
+  # default     = "t2.micro"
 }
 
 variable "aws_id" {

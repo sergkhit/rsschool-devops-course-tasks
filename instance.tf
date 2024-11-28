@@ -12,7 +12,7 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               #clone files for jenkins-pipeline and nodejs
               pwd
-              git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git /home/ubuntu/
+              git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git /home/ubuntu/nodejs-app
               ls -lha /home/ubuntu/
               
               # install Docker
