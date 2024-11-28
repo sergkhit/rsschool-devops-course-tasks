@@ -61,13 +61,12 @@ resource "aws_instance" "rs-task-public_server-a" {
               kubectl create namespace sonarqube
               helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
               helm repo update
-              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml 
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-values.yaml 
-              pwd
-              cat sonarqube-service.yaml 
-              kubectl apply -f sonarqube-service.yaml 
+              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml 
+              # kubectl apply -f sonarqube-service.yaml 
               helm install rs-sonarqube sonarqube/sonarqube --namespace sonarqube --set persistence.enabled=true --set persistence.storageClass=local-path --set service.type=LoadBalancer
-
+              sleep 120
+              kubectl apply -f sonarqube-service.yaml
               # install Jenkins
               kubectl create namespace jenkins
               sudo mkdir /data/jenkins -p
