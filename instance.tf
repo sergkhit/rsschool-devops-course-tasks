@@ -65,11 +65,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               # wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml 
               # kubectl apply -f sonarqube-service.yaml 
               helm install rs-sonarqube sonarqube/sonarqube --namespace sonarqube --set persistence.enabled=true --set persistence.storageClass=local-path --set service.type=LoadBalancer
-              # Wait for SonarQube to be ready
-              while [[ $(kubectl get pod my-sonarqube-sonarqube-0 -n sonarqube -o jsonpath='{.status.containerStatuses[*].ready}' 2>/dev/null | grep -c "true") -ne 1 ]]; do
-                echo "Waiting for SonarQube pod to be ready..."
-                sleep 10
-              done
+
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml
               sleep 120
               kubectl apply -f sonarqube-service.yaml
