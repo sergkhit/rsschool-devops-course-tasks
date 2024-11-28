@@ -63,6 +63,8 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm repo update
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml 
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-values.yaml 
+              pwd
+              cat sonarqube-service.yaml 
               kubectl apply -f sonarqube-service.yaml 
               helm install rs-sonarqube sonarqube/sonarqube --namespace sonarqube --set persistence.enabled=true --set persistence.storageClass=local-path --set service.type=LoadBalancer
 

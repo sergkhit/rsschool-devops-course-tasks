@@ -112,7 +112,7 @@ resource "aws_security_group" "rs-task-public" {
     description = "Allow inbound for Jenkins"
   }
 
-    ingress {
+  ingress {
     from_port   = 50000
     to_port     = 50000
     protocol    = "tcp"

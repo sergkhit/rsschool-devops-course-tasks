@@ -9,4 +9,4 @@ spec:
     - port: 9000
       targetPort: 9000
   selector:
-    app: sonarqube
+    app: sonarqube-sonarqube
