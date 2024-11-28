@@ -199,6 +199,14 @@ resource "aws_security_group" "rs-task-private" {
   }
 
   ingress {
+    from_port   = 31000
+    to_port     = 31000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow SonarQube Public"
+  }
+
+  ingress {
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
