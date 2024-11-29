@@ -10,29 +10,30 @@ resource "aws_instance" "rs-task-public_server-a" {
               #!/bin/bash
               hostnamectl set-hostname "master-k3s"
 
-              #clone files for jenkins-pipeline and nodejs
-              pwd
-              git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git /home/ubuntu/nodejs-app
-              ls -lha /home/ubuntu/
-              # install Docker
-              apt-get update -y
-              # Install the required packages
-              apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-              # Adding a GPG key for Docker
-              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-              # Adding a Docker repository
-              add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-              # Install Docker
-              apt-get update -y
-              apt-get install -y docker-ce
-              # Add a user to a Docker group
-              # usermod -aG docker $USER
-              sudo usermod -aG docker $USER
-              # Running Docker
-              systemctl start docker
-              systemctl enable docker
-              # Using newgrp to apply changes
-              newgrp docker
+              # #clone files for jenkins-pipeline and nodejs
+              # pwd
+              # git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git /home/ubuntu/nodejs-app
+              # ls -lha /home/ubuntu/
+              # # install Docker
+              # apt-get update -y
+              # # Install the required packages
+              # apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+              # # Adding a GPG key for Docker
+              # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+              # # Adding a Docker repository
+              # add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+              # # Install Docker
+              # apt-get update -y
+              # apt-get install -y docker-ce
+              # # Add a user to a Docker group
+              # # usermod -aG docker $USER
+              # sudo usermod -aG docker $USER
+              # # Running Docker
+              # systemctl start docker
+              # systemctl enable docker
+              # # Using newgrp to apply changes
+              # newgrp docker
+
               # install k3s
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
               sleep 30  # wait K3s start
@@ -50,6 +51,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               echo "install bitnami"
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
+              
               # # install Sonarqube 
               # kubectl create namespace sonarqube
               # helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
@@ -61,6 +63,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               # wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml
               # sleep 120
               # kubectl apply -f sonarqube-service.yaml
+
               # install Jenkins
               kubectl create namespace jenkins
               sudo mkdir /data/jenkins -p
@@ -84,13 +87,12 @@ resource "aws_instance" "rs-task-public_server-a" {
               sudo ln -s /opt/Jenkins/conf /root/conf
 
 
-              sleep 60
-              # add sonarqube in jenkins
-              kubectl exec -n jenkins svc/jenkins -c jenkins -- /bin/bash -c "jenkins-plugin-cli --plugins sonar"
-              kubectl rollout restart statefulset jenkins -n jenkins
+              # sleep 60
+              # # add sonarqube in jenkins
+              # kubectl exec -n jenkins svc/jenkins -c jenkins -- /bin/bash -c "jenkins-plugin-cli --plugins sonar"
+              # kubectl rollout restart statefulset jenkins -n jenkins
               sleep 120
               #wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Jenkinsfile
-
               # Download Dockerfile
               #wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Dockerfile
 
