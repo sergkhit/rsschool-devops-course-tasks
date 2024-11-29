@@ -14,7 +14,6 @@ resource "aws_instance" "rs-task-public_server-a" {
               pwd
               git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git /home/ubuntu/nodejs-app
               ls -lha /home/ubuntu/
-              
               # install Docker
               apt-get update -y
               # Install the required packages
@@ -34,29 +33,23 @@ resource "aws_instance" "rs-task-public_server-a" {
               systemctl enable docker
               # Using newgrp to apply changes
               newgrp docker
-
               # install k3s
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
               sleep 30  # wait K3s start
-
               # Setup kubeconfig
               mkdir -p ~/.kube
               sudo chmod 644 /etc/rancher/k3s/k3s.yaml
               sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
               sudo chown $(id -u):$(id -g) ~/.kube/config
               export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-
               # Set KUBECONFIG variable
               sudo su -c 'echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> /root/.bashrc'
               source ~/.bashrc
-
               # install Helm
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
               echo "install bitnami"
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
-
               # install Sonarqube 
               kubectl create namespace sonarqube
               helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
@@ -65,7 +58,6 @@ resource "aws_instance" "rs-task-public_server-a" {
               # wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml 
               # kubectl apply -f sonarqube-service.yaml 
               helm install rs-sonarqube sonarqube/sonarqube --namespace sonarqube --set persistence.enabled=true --set persistence.storageClass=local-path --set service.type=LoadBalancer
-
               wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml
               sleep 120
               kubectl apply -f sonarqube-service.yaml
