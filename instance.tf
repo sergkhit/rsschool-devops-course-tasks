@@ -50,17 +50,17 @@ resource "aws_instance" "rs-task-public_server-a" {
               echo "install bitnami"
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
-              # install Sonarqube 
-              kubectl create namespace sonarqube
-              helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
-              helm repo update
-              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-values.yaml 
-              # wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml 
-              # kubectl apply -f sonarqube-service.yaml 
-              helm install rs-sonarqube sonarqube/sonarqube --namespace sonarqube --set persistence.enabled=true --set persistence.storageClass=local-path --set service.type=LoadBalancer
-              wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml
-              sleep 120
-              kubectl apply -f sonarqube-service.yaml
+              # # install Sonarqube 
+              # kubectl create namespace sonarqube
+              # helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+              # helm repo update
+              # wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-values.yaml 
+              # # wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml 
+              # # kubectl apply -f sonarqube-service.yaml 
+              # helm install rs-sonarqube sonarqube/sonarqube --namespace sonarqube --set persistence.enabled=true --set persistence.storageClass=local-path --set service.type=LoadBalancer
+              # wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml
+              # sleep 120
+              # kubectl apply -f sonarqube-service.yaml
               # install Jenkins
               kubectl create namespace jenkins
               sudo mkdir /data/jenkins -p
@@ -108,7 +108,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
               echo "Public IP: $PUBLIC_IP"
               echo "$PUBLIC_IP" > /home/ubuntu/public_ip.txt
-              # kubectl patch svc jenkins -n jenkins -p '{"spec": {"type": "LoadBalancer"}}'
+              kubectl patch svc jenkins -n jenkins -p '{"spec": {"type": "LoadBalancer"}}'
               # kubectl patch svc sonarqube -n sonarqube -p '{"spec": {"type": "LoadBalancer"}}'
               EOF
 
