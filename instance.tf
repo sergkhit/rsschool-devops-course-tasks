@@ -33,7 +33,6 @@ resource "aws_instance" "rs-task-public_server-a" {
               # systemctl enable docker
               # # Using newgrp to apply changes
               # newgrp docker
-
               # install k3s
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
               sleep 30  # wait K3s start
@@ -51,7 +50,6 @@ resource "aws_instance" "rs-task-public_server-a" {
               echo "install bitnami"
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
-              
               # # install Sonarqube 
               # kubectl create namespace sonarqube
               # helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
@@ -63,7 +61,6 @@ resource "aws_instance" "rs-task-public_server-a" {
               # wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/sonarqube/sonarqube-service.yaml
               # sleep 120
               # kubectl apply -f sonarqube-service.yaml
-
               # install Jenkins
               kubectl create namespace jenkins
               sudo mkdir /data/jenkins -p
@@ -85,17 +82,14 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 30
               mkdir -p /root/conf
               sudo ln -s /opt/Jenkins/conf /root/conf
-
-
               # sleep 60
               # # add sonarqube in jenkins
               # kubectl exec -n jenkins svc/jenkins -c jenkins -- /bin/bash -c "jenkins-plugin-cli --plugins sonar"
               # kubectl rollout restart statefulset jenkins -n jenkins
-              sleep 120
+              # sleep 120
               #wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Jenkinsfile
               # Download Dockerfile
               #wget https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/refs/heads/task6/Dockerfile
-
               # Retrieve the Jenkins admin password and save to a file
               jsonpath="{.data.jenkins-admin-password}"
               secret=$(kubectl get secret -n jenkins jenkins -o jsonpath="$jsonpath")

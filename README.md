@@ -1,7 +1,7 @@
 
 
 
-Please do not grade task 6 until the evening of Saturday (November 30), I need a little more time. Thank you in advance.
+Please do not grade task 6 until the evening of Sunday (November 31), I need a little more time. Thank you in advance.
 
 
 
@@ -25,6 +25,7 @@ The pipeline will cover the software lifecycle phases of build, testing, and dep
 https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-configuration/task_6.md
 
 -----------------------------------------------------------------
+
 
 
 ├── backend.tf
@@ -101,6 +102,9 @@ root.tf : main configuration file the core infrastructure and providers.
 
 variables.tf: file defines input variables for Terraform configuration.
 
+
+the application and settings for pipieline are located in the repository:
+https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git
 
 ===========================================================
 
