@@ -1,7 +1,0 @@
-replicaCount: 1
-image:
-  repository: 905418277051.dkr.ecr.us-east-1.amazonaws.com/nodejs-app-repo
-  pullPolicy: IfNotPresent
-service:
-  type: NodePort
-  port: 3000
