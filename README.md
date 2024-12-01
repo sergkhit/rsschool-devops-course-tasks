@@ -226,11 +226,11 @@ The notification system is configured to alert about the successes or failures o
 
 Currently, the task is being executed partially. 
 SonarQube is trying to analyze the project, but it fails due to a lack of resources. 
-Gmail doesn't want to accept emails from Jenkins.
+Jenkins sent mail to gmail.
 The application is built, tested, pushed to ECR on demand, pulled, and deployed from ECR also upon request. 
 The pipeline is completed fully if the code for SonarQube is commented out.
 
-Overall, the score for the task is: 30 + 20 + 5 + 5 + 10 = 70.
+Overall, the score for the task is: 30 + 20 + 5 + 5 + 10 + 10 = 80.
 
 ===============================================================
 Pipeline Configuration (40 points) -  (30) 
@@ -253,13 +253,13 @@ A repository is created with the application, Helm chart, and Jenkinsfile. (+)
 Verification (5 points) - ok (5) 
 The pipeline runs successfully and deploys the application to the K8s cluster. (+)
 ------------------------------
-Additional Tasks (30 points)  - (10) 
+Additional Tasks (30 points)  - (20) 
 
 Application Verification (10 points)
 Application verification is performed (e.g., curl main page, send requests to API, smoke test). (-)
 
-Notification System (10 points) (-)
-A notification system is set up to alert on pipeline failures or successes. (-)
+Notification System (10 points) (10)
+A notification system is set up to alert on pipeline failures or successes. (10)
 
 Documentation (10 points)
 The pipeline setup and deployment process, are documented in a README file. (+)
