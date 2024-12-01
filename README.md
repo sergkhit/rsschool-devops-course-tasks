@@ -1,20 +1,6 @@
-
-
-
-Please do not grade task 6 until the evening of Sunday (November 31), I need a little more time. Thank you in advance.
-
-
-
-
-
-
-
-
-
+The task has not been fully completed yet; it needs a bit more time. Thank you for your understanding.
 
 -----------------------------------------------------------------
-
-
 Project: rolling-scopes-school. 
 
 Task 6: Application Deployment via Jenkins Pipeline
@@ -26,28 +12,14 @@ https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-c
 
 -----------------------------------------------------------------
 
-
-
 ├── backend.tf
 ├── bastion_host.tf
-├── Dockerfile
-├── helm-chart
-│   ├── Chart.yaml
-│   ├── templates
-│   │   ├── db-depl.yaml
-│   │   ├── db-pvc.yaml
-│   │   ├── db-service.yaml
-│   │   ├── deployment.yaml
-│   │   ├── pvc.yaml
-│   │   └── service.yaml
-│   └── values.yaml
 ├── iam.tf
 ├── instance.tf
 ├── jenkins
 │   ├── jenkins-sa.yaml
 │   ├── jenkins-values.yaml
 │   └── jenkins-volume.yaml
-├── Jenkinsfile
 ├── nacl.tf
 ├── network_security.tf
 ├── network.tf
@@ -55,9 +27,6 @@ https://github.com/rolling-scopes-school/tasks/blob/master/devops/modules/3_ci-c
 ├── README.md
 ├── root.tf
 ├── screenshots
-├── sonarqube
-│   ├── sonarqube-service.yaml
-│   └── sonarqube-values.yaml
 └── variables.tf
 
 
@@ -72,15 +41,7 @@ screenshots/: directory contains resources and works screenshots.
 
 .gitignore:   file specifies which folders or files should be ignored when tracking changes with Git.
 
-Dockerfile - file for building the Docker image.
-
-helm-chart/ - directory containing the Helm chart for WordPress.
-
 jenkins/ - directory containing the files for configuration Jenkins.
-
-sonarqube/ - directory containing the files for configuration sonarqube.
-
-Jenkinsfile - configuration file for the Jenkins Pipeline.
 
 backend.tf:   file contains the S3 resource declarations for terraform backend.
 
@@ -103,8 +64,37 @@ root.tf : main configuration file the core infrastructure and providers.
 variables.tf: file defines input variables for Terraform configuration.
 
 
+===========================================================
+
 the application and settings for pipieline are located in the repository:
 https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git
+
+└── rsschool-devops-course-tasks-nodejs
+    ├── app
+    │   ├── app.test.js
+    │   ├── index.js
+    │   └── package.json
+    ├── Dockerfile
+    ├── helm-chart
+    │   ├── Chart.yaml
+    │   ├── templates
+    │   │   ├── deployment.yaml
+    │   │   └── service.yaml
+    │   └── values.yaml
+    ├── Jenkinsfile
+    └── sonar-project.properties
+
+
+
+Dockerfile - file for building the Docker image.
+
+helm-chart/ - directory containing the Helm chart for app.
+
+app/  - directory containing the files for app.
+
+Jenkinsfile - configuration file for the Jenkins Pipeline.
+
+sonar-project.properties - file for the SonarQube.
 
 ===========================================================
 
@@ -183,20 +173,6 @@ after create tunnel for kubectl:
 ssh -i rs-task-key.pem -fNL 6443:ip_k3s_master:6443 ubuntu@ip_bastion
 ```
 
-**Set up Jenkins and run the pipeline**
-
-Running the Pipeline
-
-The pipeline is automatically triggered on each commit to the repository.
-
-**Testing**
-
-After deployment, you can test the application by sending requests to the API or by opening the main page of WordPress.
-
-**Notifications**
-
-The notification system is configured to alert about the successes or failures of the pipeline execution.
-
 
 **Verify info in the cluster:**
 
@@ -210,42 +186,83 @@ kubectl get deployment <your_deployment> -n default
 kubectl logs <pod> -n default
 ```
 
+**Set up Jenkins and run the pipeline**
+
+
+In Jenkins, you need to install and configure the following plugins:
+
+Generic Webhook Trigger Version 2.2.5
+Plugin SonarQube ScannerVersion 2.17.3
+AWS Credentials Version 231.v08a_59f17d742
+
+"Additionally, it is necessary to create an account at https://sonarcloud.io, generate a token, and add it to the Jenkins settings."
+
+After, you need to create a new pipeline job in Jenkins. 
+
+In it, specify the Git path to the Jenkinsfile: https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git
+
+Also, change the branch settings from master to main."
+
+Running the Pipeline
+
+The pipeline is automatically triggered on each commit to the repository.
+
+**Testing**
+
+After deployment, you can test the application by sending requests to the API or by opening the main page of App on the port 30001, or curl.
+
+**Notifications**
+
+The notification system is configured to alert about the successes or failures of the pipeline execution.
+
+
+===========================================================
 ===========================================================
 
 ## Evaluation Criteria (100 points for covering all criteria)
 
 ------------------------------
-Pipeline Configuration (40 points) - ok (40) 
+
+
+Currently, the task is being executed partially. 
+SonarQube is trying to analyze the project, but it fails due to a lack of resources. 
+Gmail doesn't want to accept emails from Jenkins.
+The application is built, tested, pushed to ECR on demand, pulled, and deployed from ECR also upon request. 
+The pipeline is completed fully if the code for SonarQube is commented out.
+
+Overall, the score for the task is: 30 + 20 + 5 + 5 + 10 = 70.
+
+===============================================================
+Pipeline Configuration (40 points) -  (30) 
 
 A Jenkins pipeline is configured and stored as a Jenkinsfile in the main git repository.
 
 The pipeline includes the following steps:
-Application build
-Unit test execution
-Security check with SonarQube
-Docker image building and pushing to ECR (manual trigger)
-Deployment to K8s cluster with Helm (dependent on the previous step)
+Application build (+)
+Unit test execution (+)
+Security check with SonarQube (-)
+Docker image building and pushing to ECR (manual trigger) (+)
+Deployment to K8s cluster with Helm (dependent on the previous step) (+)
 ------------------------------
 Artifact Storage (20 points) - ok (20) 
-
-Built artifacts (Dockerfile, Helm chart) are stored in git and ECR (Docker image).
+Built artifacts (Dockerfile, Helm chart) are stored in git and ECR (Docker image). (+)
 ------------------------------
 Repository Submission (5 points) - ok (5) 
-
-A repository is created with the application, Helm chart, and Jenkinsfile.
+A repository is created with the application, Helm chart, and Jenkinsfile. (+)
 ------------------------------
 Verification (5 points) - ok (5) 
-
-The pipeline runs successfully and deploys the application to the K8s cluster.
+The pipeline runs successfully and deploys the application to the K8s cluster. (+)
 ------------------------------
-Additional Tasks (30 points)  - ok (30) 
+Additional Tasks (30 points)  - (10) 
 
 Application Verification (10 points)
-Application verification is performed (e.g., curl main page, send requests to API, smoke test).
-Notification System (10 points)
-A notification system is set up to alert on pipeline failures or successes.
+Application verification is performed (e.g., curl main page, send requests to API, smoke test). (-)
+
+Notification System (10 points) (-)
+A notification system is set up to alert on pipeline failures or successes. (-)
+
 Documentation (10 points)
-The pipeline setup and deployment process, are documented in a README file.
+The pipeline setup and deployment process, are documented in a README file. (+)
 ------------------------------
 ------------------------------
-Pts calc: 40+20+5+5+30 = 100
+Pts calc: 30 + 20 + 5 + 5 + 10 = 70
