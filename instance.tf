@@ -38,21 +38,30 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 10 
               helm repo update
               kubectl create namespace monitoring 
-              mkdir -p /home/ubuntu/prometheus-chart
-              curl -o /home/ubuntu/prometheus-chart/prometheus-values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task7/prometheus/prometheus-values.yaml
+              # mkdir -p /home/ubuntu/prometheus-chart
+              # curl -o /home/ubuntu/prometheus-chart/prometheus-values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task7/prometheus/prometheus-values.yaml
+              
               # helm install prometheus prometheus-community/prometheus --namespace monitoring \
               #   --set server.service.type=LoadBalancer \
-              #   --set server.service.port=33000 \
+              #   --set server.service.port=30000 \
               #   --set server.service.targetPort=9090 \
               #   --set alertmanager.service.type=LoadBalancer \
               #   --set pushgateway.service.type=LoadBalancer \
               #   -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
-              # helm install prometheus prometheus-community/prometheus --namespace monitoring -f /home/ubuntu/prometheus-chart/prometheus-values.yaml             
 
               helm install prometheus prometheus-community/prometheus --namespace monitoring \
-                  --set server.service.type=NodePort \
-                  --set server.service.nodePort=30000 \
-                  -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
+                --set server.service.type=LoadBalancer \
+                --set server.service.port=30000 \
+                --set server.service.targetPort=9090 \
+                --set alertmanager.service.type=LoadBalancer \
+                --set pushgateway.service.type=LoadBalancer 
+
+              # helm install prometheus prometheus-community/prometheus --namespace monitoring -f /home/ubuntu/prometheus-chart/prometheus-values.yaml             
+
+              # helm install prometheus prometheus-community/prometheus --namespace monitoring \
+              #     --set server.service.type=NodePort \
+              #     --set server.service.nodePort=30000 \
+              #     -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
 
               # Ожидание, пока сервер Prometheus не будет готов
               until kubectl rollout status deployment/prometheus-server -n monitoring; do
