@@ -39,7 +39,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm repo update
               kubectl create namespace monitoring 
               mkdir -p /home/ubuntu/prometheus-chart
-              curl -o /home/ubuntu/prometheus-chart/prometheus-values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task7/prometheus-values.yaml
+              curl -o /home/ubuntu/prometheus-chart/prometheus-values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task7/prometheus/prometheus-values.yaml
               # helm install prometheus prometheus-community/prometheus --namespace monitoring \
               #   --set server.service.type=LoadBalancer \
               #   --set server.service.port=33000 \
