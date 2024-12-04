@@ -51,7 +51,7 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               helm install prometheus prometheus-community/prometheus --namespace monitoring \
                   --set server.service.type=NodePort \
-                  --set server.service.nodePort=33000 \
+                  --set server.service.nodePort=30000 \
                   -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
 
               # Ожидание, пока сервер Prometheus не будет готов
