@@ -39,20 +39,40 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
               helm repo update
               kubectl create namespace monitoring 
+              mkdir -p /home/ubuntu/prometheus-chart
+              curl -o /home/ubuntu/prometheus-chart/prometheus-values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task7/prometheus-values.yaml
               helm install prometheus prometheus-community/prometheus --namespace monitoring \
                 --set server.service.type=LoadBalancer \
                 --set server.service.port=33000 \
                 --set server.service.targetPort=9090 \
                 --set alertmanager.service.type=LoadBalancer \
-                --set pushgateway.service.type=LoadBalancer
+                --set pushgateway.service.type=LoadBalancer \
+                -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
 
-              sleep 120  # wait prometheus start
+              # sleep 120  # wait prometheus start
+              # Checking the status of Prometheus pods
+              echo "Waiting for Prometheus to start..."
+              for i in {1..60}; do
+                  # Check if the Prometheus pod is running
+                  if kubectl get pods -n monitoring | grep prometheus-server | grep -q 'Running'; then
+                      echo "Prometheus is up and running!"
+                      break
+                  fi
+                  echo "Waiting for Prometheus to start... ($i/30)"
+                  sleep 10
+              done
+
+              if [ $i -eq 30 ]; then
+                  echo "Prometheus did not start in a timely manner."
+                  exit 1
+              fi
+
               helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
               helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
               kubectl get pods -A
               kubectl get svc -A
               helm list -n wordpress
-              helm list -n prometheus
+              helm list -n monitoring
               EOF
 
   user_data_replace_on_change = true
