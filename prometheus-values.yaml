@@ -1,20 +1,56 @@
-alerting:
-  alertmanagers:
-    - namespace: default
-      name: alertmanager
-      port: alertmanager
+global:
+  scrape_interval: 15s # Default scraping interval
+  evaluation_interval: 15s # Rules evaluation interval
 
-serviceMonitor:
-  enabled: true
-  namespace: monitoring # Укажите здесь нужный namespace, в котором будет Prometheus
-  additionalLabels: {}
+# Prometheus configuration
+prometheus:
+  service:
+    type: NodePort
+    nodePort: 33000 # Explicitly set NodePort to 33000
+    ports:
+      - name: http
+        port: 9090
+        targetPort: http
+        nodePort: 33000
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  retention: 7d # Retain metrics for 7 days
+  replicas: 1 # Single-node setup requires only 1 replica
 
-# Позволяет собрать метрики всех подов в разных namespaces
-podMonitor:
+# Disable unnecessary components for resource optimization
+alertmanager:
+  enabled: false # Disable Alertmanager to save resources
+
+# Node Exporter configuration
+nodeExporter:
+  resources:
+    limits:
+      cpu: 50m
+      memory: 64Mi
+    requests:
+      cpu: 25m
+      memory: 32Mi
+
+# Kube State Metrics configuration
+kubeStateMetrics:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+# Prometheus Operator configuration
+prometheusOperator:
   enabled: true
-  namespace: monitoring # Укажите здесь нужный namespace, в котором будет Prometheus
-  additionalLabels: {}
-  
+  replicas: 1 # Single replica is sufficient
+
 # Создание правил для сбора метрик
 rules:
   groups:
@@ -38,3 +74,45 @@ rules:
           expr: kube_node_status_condition
         - record: kube_pod_container_status_restarts_total
           expr: kube_pod_container_status_restarts_total
+
+
+# alerting:
+#   alertmanagers:
+#     - namespace: default
+#       name: alertmanager
+#       port: alertmanager
+
+# serviceMonitor:
+#   enabled: true
+#   namespace: monitoring # Укажите здесь нужный namespace, в котором будет Prometheus
+#   additionalLabels: {}
+
+# # Позволяет собрать метрики всех подов в разных namespaces
+# podMonitor:
+#   enabled: true
+#   namespace: monitoring # Укажите здесь нужный namespace, в котором будет Prometheus
+#   additionalLabels: {}
+  
+# # Создание правил для сбора метрик
+# rules:
+#   groups:
+#     - name: example-rules
+#       rules:
+#         - record: node_cpu_seconds_total
+#           expr: rate(node_cpu_seconds_total[5m])
+#         - record: node_memory_MemAvailable_bytes
+#           expr: node_memory_MemAvailable_bytes
+#         - record: node_memory_Active_bytes
+#           expr: node_memory_Active_bytes
+#         - record: node_disk_io_time_seconds_total
+#           expr: node_disk_io_time_seconds_total
+#         - record: node_network_receive_bytes_total
+#           expr: increase(node_network_receive_bytes_total[5m])
+#         - record: kube_pod_status_phase
+#           expr: kube_pod_status_phase
+#         - record: kube_deployment_status_replicas
+#           expr: kube_deployment_status_replicas
+#         - record: kube_node_status_condition
+#           expr: kube_node_status_condition
+#         - record: kube_pod_container_status_restarts_total
+#           expr: kube_pod_container_status_restarts_total

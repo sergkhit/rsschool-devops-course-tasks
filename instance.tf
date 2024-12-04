@@ -9,34 +9,33 @@ resource "aws_instance" "rs-task-public_server-a" {
   user_data = <<-EOF
               #!/bin/bash
               hostnamectl set-hostname "master-k3s"
-
               # install k3s
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
               sleep 30  # wait K3s start
-
               # Setup kubeconfig
               mkdir -p ~/.kube
               sudo chmod 644 /etc/rancher/k3s/k3s.yaml
               sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
               sudo chown $(id -u):$(id -g) ~/.kube/config
               export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-
               # Set KUBECONFIG variable
               sudo su -c 'echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> /root/.bashrc'
               source ~/.bashrc
-
+              # kubeconfig for ubuntu user
+              mkdir -p /home/ubuntu/.kube
+              cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
+              chown ubuntu:ubuntu /home/ubuntu/.kube/config
               # install Helm and add bitnami
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
-
               # Install WordPress using Helm (from another repo)
               mkdir -p /home/ubuntu/helm
               git clone https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress /home/ubuntu/helm
               helm install task7-wordpress /home/ubuntu/helm/wordpress --namespace default
-
               # Install Prometheus using Helm
               helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+              sleep 10 
               helm repo update
               kubectl create namespace monitoring 
               mkdir -p /home/ubuntu/prometheus-chart
@@ -48,25 +47,7 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set alertmanager.service.type=LoadBalancer \
                 --set pushgateway.service.type=LoadBalancer \
                 -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
-
-              # sleep 120  # wait prometheus start
-              # Checking the status of Prometheus pods
-              echo "Waiting for Prometheus to start..."
-              for i in {1..60}; do
-                  # Check if the Prometheus pod is running
-                  if kubectl get pods -n monitoring | grep prometheus-server | grep -q 'Running'; then
-                      echo "Prometheus is up and running!"
-                      break
-                  fi
-                  echo "Waiting for Prometheus to start... ($i/30)"
-                  sleep 10
-              done
-
-              if [ $i -eq 30 ]; then
-                  echo "Prometheus did not start in a timely manner."
-                  exit 1
-              fi
-
+              sleep 120  # wait prometheus start
               helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
               helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
               kubectl get pods -A
