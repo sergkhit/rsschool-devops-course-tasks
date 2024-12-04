@@ -47,8 +47,18 @@ resource "aws_instance" "rs-task-public_server-a" {
               #   --set alertmanager.service.type=LoadBalancer \
               #   --set pushgateway.service.type=LoadBalancer \
               #   -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
-              helm install prometheus prometheus-community/prometheus --namespace monitoring -f /home/ubuntu/prometheus-chart/prometheus-values.yaml             
-              sleep 120  # wait prometheus start
+              # helm install prometheus prometheus-community/prometheus --namespace monitoring -f /home/ubuntu/prometheus-chart/prometheus-values.yaml             
+
+              helm install prometheus prometheus-community/prometheus --namespace monitoring \
+                  --set server.service.type=NodePort \
+                  --set server.service.nodePort=33000 \
+                  -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
+
+              # Ожидание, пока сервер Prometheus не будет готов
+              until kubectl rollout status deployment/prometheus-server -n monitoring; do
+                  echo "Waiting for Prometheus server to be ready..."
+                  sleep 5
+              done
               helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
               helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
               kubectl get pods -A

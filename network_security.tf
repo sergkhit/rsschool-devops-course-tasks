@@ -109,7 +109,23 @@ resource "aws_security_group" "rs-task-public" {
     to_port     = 32000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow inbound for Jenkins"
+    description = "Allow inbound for Wordpress"
+  }
+
+  ingress {
+    from_port   = 33000
+    to_port     = 33000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow inbound for Prometheus"
+  }
+
+  ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow inbound for Prometheus"
   }
 
   ingress {
@@ -126,6 +142,14 @@ resource "aws_security_group" "rs-task-public" {
     protocol    = "tcp"
     cidr_blocks = ["10.20.0.0/16"]
     description = "Allow SSH access from the bastion host "
+  }
+
+  ingress {
+    from_port   = 1024
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow for tests"
   }
 
   egress {
