@@ -67,6 +67,10 @@ repository has been created, where wordpres can be configured for installation v
 
 ===========================================================
 
+For this task I am using my Wordpress cluster created in task 5. 
+
+I updated my script with install Prometheus.
+
 ## How to Use
 
 Clone the repository Clone the repository and navigate to the project directory:

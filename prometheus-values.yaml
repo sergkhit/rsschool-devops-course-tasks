@@ -1,0 +1,40 @@
+alerting:
+  alertmanagers:
+    - namespace: default
+      name: alertmanager
+      port: alertmanager
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring # Укажите здесь нужный namespace, в котором будет Prometheus
+  additionalLabels: {}
+
+# Позволяет собрать метрики всех подов в разных namespaces
+podMonitor:
+  enabled: true
+  namespace: monitoring # Укажите здесь нужный namespace, в котором будет Prometheus
+  additionalLabels: {}
+  
+# Создание правил для сбора метрик
+rules:
+  groups:
+    - name: example-rules
+      rules:
+        - record: node_cpu_seconds_total
+          expr: rate(node_cpu_seconds_total[5m])
+        - record: node_memory_MemAvailable_bytes
+          expr: node_memory_MemAvailable_bytes
+        - record: node_memory_Active_bytes
+          expr: node_memory_Active_bytes
+        - record: node_disk_io_time_seconds_total
+          expr: node_disk_io_time_seconds_total
+        - record: node_network_receive_bytes_total
+          expr: increase(node_network_receive_bytes_total[5m])
+        - record: kube_pod_status_phase
+          expr: kube_pod_status_phase
+        - record: kube_deployment_status_replicas
+          expr: kube_deployment_status_replicas
+        - record: kube_node_status_condition
+          expr: kube_node_status_condition
+        - record: kube_pod_container_status_restarts_total
+          expr: kube_pod_container_status_restarts_total

@@ -9,29 +9,50 @@ resource "aws_instance" "rs-task-public_server-a" {
   user_data = <<-EOF
               #!/bin/bash
               hostnamectl set-hostname "master-k3s"
+
               # install k3s
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
               sleep 30  # wait K3s start
+
               # Setup kubeconfig
               mkdir -p ~/.kube
               sudo chmod 644 /etc/rancher/k3s/k3s.yaml
               sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
               sudo chown $(id -u):$(id -g) ~/.kube/config
               export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
               # Set KUBECONFIG variable
               sudo su -c 'echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> /root/.bashrc'
               source ~/.bashrc
-              # install Helm
+
+              # install Helm and add bitnami
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-              echo "install bitnami"
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
-              # Clone the WordPress repository
+
+              # Install WordPress using Helm (from another repo)
               mkdir -p /home/ubuntu/helm
               git clone https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress /home/ubuntu/helm
+              helm install task7-wordpress /home/ubuntu/helm/wordpress --namespace default
 
-              # Install WordPress using Helm
-              helm install task5-wordpress /home/ubuntu/helm/wordpress --namespace default
+              # Install Prometheus using Helm
+              helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+              helm repo update
+              kubectl create namespace monitoring 
+              helm install prometheus prometheus-community/prometheus --namespace monitoring \
+                --set server.service.type=LoadBalancer \
+                --set server.service.port=33000 \
+                --set server.service.targetPort=9090 \
+                --set alertmanager.service.type=LoadBalancer \
+                --set pushgateway.service.type=LoadBalancer
+
+              sleep 120  # wait prometheus start
+              helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
+              helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
+              kubectl get pods -A
+              kubectl get svc -A
+              helm list -n wordpress
+              helm list -n prometheus
               EOF
 
   user_data_replace_on_change = true
