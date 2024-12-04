@@ -19,6 +19,12 @@ prometheus:
     requests:
       cpu: 100m
       memory: 128Mi
+  persistence:
+    enabled: true
+    storageClass: "local-path"
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi       
   retention: 7d # Retain metrics for 7 days
   replicas: 1 # Single-node setup requires only 1 replica
 
