@@ -40,13 +40,14 @@ resource "aws_instance" "rs-task-public_server-a" {
               kubectl create namespace monitoring 
               mkdir -p /home/ubuntu/prometheus-chart
               curl -o /home/ubuntu/prometheus-chart/prometheus-values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task7/prometheus-values.yaml
-              helm install prometheus prometheus-community/prometheus --namespace monitoring \
-                --set server.service.type=LoadBalancer \
-                --set server.service.port=33000 \
-                --set server.service.targetPort=9090 \
-                --set alertmanager.service.type=LoadBalancer \
-                --set pushgateway.service.type=LoadBalancer \
-                -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
+              # helm install prometheus prometheus-community/prometheus --namespace monitoring \
+              #   --set server.service.type=LoadBalancer \
+              #   --set server.service.port=33000 \
+              #   --set server.service.targetPort=9090 \
+              #   --set alertmanager.service.type=LoadBalancer \
+              #   --set pushgateway.service.type=LoadBalancer \
+              #   -f /home/ubuntu/prometheus-chart/prometheus-values.yaml
+              helm install prometheus prometheus-community/prometheus --namespace monitoring -f /home/ubuntu/prometheus-chart/prometheus-values.yaml             
               sleep 120  # wait prometheus start
               helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
               helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
