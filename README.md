@@ -1,10 +1,3 @@
-
-Please do not evaluate the tasks until Saturday (December 7th). 
-I need a little more time. Thank you for your understanding."
-discord: @sergkhit
-
-
-
 ===========================================================
 
 Project: rolling-scopes-school. 
@@ -78,7 +71,7 @@ Clone the repository Clone the repository and navigate to the project directory:
 ```bash
 git clone git@github.com:sergkhit/rsschool-devops-course-tasks.git
 cd rsschool-devops-course-tasks
-git branch task_5
+git branch task7
 ```
 
 Initialize Terraform:
