@@ -26,25 +26,23 @@ resource "aws_instance" "rs-task-public_server-a" {
               mkdir -p /home/ubuntu/.kube
               cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
               chown ubuntu:ubuntu /home/ubuntu/.kube/config
+
               # install Helm and add bitnami
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
+
               # Install WordPress using Helm (from another repo)
               kubectl create namespace wordpress
               mkdir -p /home/ubuntu/helm
               git clone https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress /home/ubuntu/helm
               helm install task7-wordpress /home/ubuntu/helm/wordpress --namespace wordpress
+
               # Install Prometheus using Helm
               helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
               sleep 10 
               helm repo update
               kubectl create namespace monitoring 
-              mkdir -p /home/ubuntu/prometheus-chart
-              curl -o /home/ubuntu/prometheus-chart/prometheus-values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task7/prometheus/prometheus-values.yaml
-              
-              # helm install prometheus prometheus-community/prometheus --namespace monitoring -f /home/ubuntu/prometheus-chart/prometheus-values.yaml             
-
               helm install prometheus prometheus-community/prometheus --namespace monitoring \
                 --set server.service.type=NodePort \
                 --set server.service.port=30003 \
@@ -52,7 +50,8 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set server.service.targetPort=9090 \
                 --set alertmanager.service.type=NodePort \
                 --set alertmanager.service.port=30004 \
-                --set alertmanager.service.nodePort=30004 
+                --set alertmanager.service.nodePort=30004 \
+                --set alertmanager.service.targetPort=9093
               sleep 300
               helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
               helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring

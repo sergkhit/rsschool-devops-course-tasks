@@ -144,7 +144,7 @@ after create tunnel for kubectl:
 ssh -i rs-task-key.pem -fNL 6443:ip_k3s_master:6443 ubuntu@ip_bastion
 ```
 
-** Upgrading WordPress Chart **
+**Upgrading WordPress Chart**
 
 To upgrade the wordpress Helm chart with new values or chart updates, use:
 
@@ -159,16 +159,92 @@ To uninstall the wordpress Helm chart and remove all associated resources, use:
 helm uninstall wordpress --namespace default
 ```
 
+**Info about Prometheus**
+
+A separate namespace called monitoring is created to isolate all monitoring components.
+
+The following components are installed:
+
+Prometheus — the main server for monitoring and storing metrics.
+External access: port 30003.
+Internal (for metrics servicing): port 9090.
+
+Alertmanager — for managing event notifications.
+External access: port 30004.
+Internal (for metrics servicing): port 9093.
+
+Node Exporter — for collecting metrics about physical nodes.
+TargetPort (internal): by default 9100.
+
+Kube State Metrics — for collecting metrics about the state of Kubernetes objects.
+TargetPort (internal): by default 8080.
+
+After the installation using Terraform, the parameter public_server_a_public_ip = "ip_address" is outputted. 
+This will be the public address where the services are accessible.
+
+Prometheus:   ip_address:30003
+Alertmanager: ip_address:30004
+
+
+**Prometheus Metrics for Monitoring:**
+
+1. **Node Exporter Metrics (Infrastructure Metrics)**
+
+   **CPU Metrics:**
+   - `node_cpu_seconds_total{mode="user"}` — CPU time spent in user mode.
+   - `node_cpu_seconds_total{mode="system"}` — CPU time spent in system mode.
+   - `node_cpu_seconds_total{mode="idle"}` — CPU time spent idle.
+
+   **Memory Metrics:**
+   - `node_memory_MemTotal_bytes` — total amount of available memory.
+   - `node_memory_MemAvailable_bytes` — available memory.
+   - `node_memory_Active_bytes` — active memory.
+   - `node_memory_MemFree_bytes` — free memory.
+
+   **Disk Metrics:**
+   - `node_disk_io_time_seconds_total` — total disk I/O time.
+   - `node_filesystem_usage` — filesystem usage.
+
+   **Network Metrics:**
+   - `node_network_receive_bytes_total` — total bytes received over the network.
+   - `node_network_transmit_bytes_total` — total bytes transmitted over the network.
+
+2. **Kube-State-Metrics (Kubernetes Metrics)**
+
+   - `kube_pod_status_phase` — status of pods (Running, Pending, Failed, etc.).
+   - `kube_deployment_status_replicas` — number of replicas in deployments.
+   - `kube_deployment_status_updated_replicas` — number of updated replicas in deployments.
+   - `kube_node_status_condition` — status of nodes (Ready, NotReady, etc.).
+   - `kube_pod_container_status_ready` — readiness of containers in pods.
+   - `kube_pod_container_status_restarts_total` — total number of container restarts.
+   - `kube_namespace_created` — for tracking namespaces in the cluster.
+
+3. **Prometheus Metrics (Monitoring System Metrics)**
+
+   - `prometheus_engine_query_duration_seconds` — duration of Prometheus queries.
+   - `ALERTS` — active alerts and their states.
+
+4. **Metrics for WordPress**
+
+   **WordPress System Metrics:**
+   - `wordpress_http_requests_total` — total number of HTTP requests.
+   - `wordpress_http_request_duration_seconds` — duration of HTTP requests.
+   - `wordpress_response_status` — HTTP response status (e.g., 2xx, 4xx, 5xx).
+   - `wordpress_db_queries_total` — total number of database queries.
+   - `wordpress_db_query_duration_seconds` — average duration of database queries.
+
+
+
 **Verify info in the cluster:**
 
 ```bash
 kubectl get nodes
-kubectl get pods -n default
+kubectl get pods -A
 kubectl get pv
-kubectl get pvc 
-kubectl get svc
-kubectl get deployment wordpress -n default
-kubectl logs <wordpress-pod> -n default
+kubectl get pvc -A
+kubectl get svc -A
+kubectl get deployment wordpress -n wordpress
+kubectl logs <wordpress-pod> -n wordpress
 ```
 
 ===========================================================
