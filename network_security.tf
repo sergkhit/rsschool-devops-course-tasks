@@ -113,12 +113,21 @@ resource "aws_security_group" "rs-task-public" {
   }
 
   ingress {
-    from_port   = 30000
-    to_port     = 30000
+    from_port   = 30003
+    to_port     = 30003
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow inbound for Prometheus"
   }
+
+  ingress {
+    from_port   = 30004
+    to_port     = 30004
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow inbound for Prometheus alertmanager"
+  }
+
 
   ingress {
     from_port   = 9100

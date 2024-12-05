@@ -188,52 +188,61 @@ Alertmanager: ip_address:30004
 
 **Prometheus Metrics for Monitoring:**
 
-1. **Node Exporter Metrics (Infrastructure Metrics)**
+**Node Exporter Metrics (Infrastructure Metrics)**
 
-   **CPU Metrics:**
-   - `node_cpu_seconds_total{mode="user"}` — CPU time spent in user mode.
-   - `node_cpu_seconds_total{mode="system"}` — CPU time spent in system mode.
-   - `node_cpu_seconds_total{mode="idle"}` — CPU time spent idle.
+1. **CPU Metrics:**
 
-   **Memory Metrics:**
-   - `node_memory_MemTotal_bytes` — total amount of available memory.
-   - `node_memory_MemAvailable_bytes` — available memory.
-   - `node_memory_Active_bytes` — active memory.
-   - `node_memory_MemFree_bytes` — free memory.
+`node_cpu_seconds_total{mode="user"}` — total CPU time spent in user mode.
+`node_cpu_seconds_total{mode="system"}` — total CPU time spent in system mode.
+`node_cpu_seconds_total{mode="idle"}` — total CPU time spent in idle mode.
+`node_cpu_seconds_total{mode="iowait"}` — total CPU time spent waiting for I/O operations.
 
-   **Disk Metrics:**
-   - `node_disk_io_time_seconds_total` — total disk I/O time.
-   - `node_filesystem_usage` — filesystem usage.
+2. **Memory Metrics:**
 
-   **Network Metrics:**
-   - `node_network_receive_bytes_total` — total bytes received over the network.
-   - `node_network_transmit_bytes_total` — total bytes transmitted over the network.
+`node_memory_MemTotal_bytes` — total amount of available memory.
+`node_memory_MemAvailable_bytes` — amount of available memory.
+`node_memory_Active_bytes` — amount of active memory.
+`node_memory_MemFree_bytes` — amount of free memory.
+`node_memory_Cached_bytes` — amount of cached memory.
+`node_memory_Buffers_bytes` — amount of memory occupied by buffers.
 
-2. **Kube-State-Metrics (Kubernetes Metrics)**
+3. **Disk Metrics:**
 
-   - `kube_pod_status_phase` — status of pods (Running, Pending, Failed, etc.).
-   - `kube_deployment_status_replicas` — number of replicas in deployments.
-   - `kube_deployment_status_updated_replicas` — number of updated replicas in deployments.
-   - `kube_node_status_condition` — status of nodes (Ready, NotReady, etc.).
-   - `kube_pod_container_status_ready` — readiness of containers in pods.
-   - `kube_pod_container_status_restarts_total` — total number of container restarts.
-   - `kube_namespace_created` — for tracking namespaces in the cluster.
+`node_disk_io_time_seconds_total` — total time spent on disk I/O operations.
+`node_disk_read_bytes_total` — total number of bytes read from the disk.
+`node_disk_written_bytes_total` — total number of bytes written to the disk.
+`node_filesystem_avail_bytes` — available space on the filesystem.
+`node_filesystem_free_bytes` — free space on the filesystem.
+`node_disk_reads_completed_total` — total number of completed read operations.
+`node_disk_writes_completed_total` — total number of completed write operations.
 
-3. **Prometheus Metrics (Monitoring System Metrics)**
+4. **Network Metrics:**
 
-   - `prometheus_engine_query_duration_seconds` — duration of Prometheus queries.
-   - `ALERTS` — active alerts and their states.
+`node_network_receive_bytes_total` — total number of bytes received over the network.
+`node_network_transmit_bytes_total` — total number of bytes transmitted over the network.
+`node_network_receive_packets_total` — total number of received packets.
+`node_network_transmit_packets_total` — total number of transmitted packets.
+`node_network_receive_errs_total` — total number of receive errors.
+`node_network_transmit_errs_total` — total number of transmit errors.
 
-4. **Metrics for WordPress**
+5. **Kube-State-Metrics (Kubernetes Metrics)**
 
-   **WordPress System Metrics:**
-   - `wordpress_http_requests_total` — total number of HTTP requests.
-   - `wordpress_http_request_duration_seconds` — duration of HTTP requests.
-   - `wordpress_response_status` — HTTP response status (e.g., 2xx, 4xx, 5xx).
-   - `wordpress_db_queries_total` — total number of database queries.
-   - `wordpress_db_query_duration_seconds` — average duration of database queries.
+`kube_pod_status_phase` — status of pods (Running, Pending, Failed, etc.).
+`kube_deployment_status_replicas` — number of replicas in deployments.
+`kube_deployment_status_updated_replicas` — number of updated replicas in deployments.
+`kube_node_status_condition` — status of nodes (Ready, NotReady, etc.).
+`kube_pod_container_status_ready` — readiness of containers in pods.
+`kube_pod_container_status_restarts_total` — total number of container restarts.
+`kube_namespace_created` — for tracking namespaces in the cluster.
 
+6. **Prometheus Metrics (Monitoring System Metrics)**
 
+`prometheus_engine_query_duration_seconds` — duration of Prometheus queries.
+`ALERTS` — active alerts and their states.
+`prometheus_http_request_duration_seconds` — duration of HTTP requests to Prometheus.
+
+Since there is no such requirement specified in the assignment, an exporter for WordPress has not been set up. 
+To obtain WordPress metrics, it is necessary to install wordpress_exporter or similar solutions."
 
 **Verify info in the cluster:**
 
