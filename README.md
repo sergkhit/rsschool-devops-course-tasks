@@ -258,33 +258,22 @@ kubectl logs <wordpress-pod> -n wordpress
 
 ===========================================================
 
-## Evaluation Criteria (100 points for covering all criteria)
-
+## Evaluation Criteria (100 points for covering all criteria) - ok (100)
 ------------------------------
-Helm Chart Creation (40 points) - ok (40) 
-
-A Helm chart for the WordPress application is created.
+Prometheus Installation (20 points) - ok (20) 
+Prometheus is installed and running on the K8s cluster.
 ------------------------------
-Application Deployment (30 points) - ok (30) 
-
-The application is deployed using the Helm chart.
-The application is accessible from the internet.
+Deployment Automation (30 points) - ok (30) 
+Automation of deployment with IaC or CI/CD pipeline is created.
 ------------------------------
-Repository Submission (5 points) - ok (5) 
-
-A new repository is created with the WordPress and Helm chart.
+Web interface is available (10 points) - ok (10) 
+Metrics can be checked via Prometheus web interface.
 ------------------------------
-Verification (5 points) - ok (5) 
-
-The application is verified to be running and accessible.
+Metrics Collection (35 points) - ok (35) 
+Prometheus is collecting essential cluster-specific metrics, such as nodes' memory usage.
 ------------------------------
-Additional Tasks (20 points) - ok (20) 
-
-CI/CD Pipeline (10 points)
-A CI/CD pipeline is set up to automate the deployment of the application.
-
-Documentation (10 points)
-The application setup and deployment process are documented in a README file.
+Documentation is created (5 points) - ok (5) 
+A README file is created or updated documenting the Prometheus deployment and configuration.
 ------------------------------
 ------------------------------
-Pts calc: 40+30+5+5+20 = 100
+Pts calc: 20+30+10+35+5 = 100
