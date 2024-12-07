@@ -252,21 +252,20 @@ kubectl logs <wordpress-pod> -n wordpress
 ===========================================================
 
 ## Evaluation Criteria (100 points for covering all criteria) - ok (100)
-------------------------------
+
 Prometheus Installation (20 points) - ok (20) 
 Prometheus is installed and running on the K8s cluster.
-------------------------------
+
 Deployment Automation (30 points) - ok (30) 
 Automation of deployment with IaC or CI/CD pipeline is created.
-------------------------------
+
 Web interface is available (10 points) - ok (10) 
 Metrics can be checked via Prometheus web interface.
-------------------------------
+
 Metrics Collection (35 points) - ok (35) 
 Prometheus is collecting essential cluster-specific metrics, such as nodes' memory usage.
-------------------------------
+
 Documentation is created (5 points) - ok (5) 
 A README file is created or updated documenting the Prometheus deployment and configuration.
-------------------------------
-------------------------------
+
 Pts calc: 20+30+10+35+5 = 100

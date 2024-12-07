@@ -32,12 +32,6 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm repo add bitnami https://charts.bitnami.com/bitnami
               kubectl get pods --namespace default
 
-              # Install WordPress using Helm (from another repo)
-              kubectl create namespace wordpress
-              mkdir -p /home/ubuntu/helm
-              git clone https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress /home/ubuntu/helm
-              helm install task7-wordpress /home/ubuntu/helm/wordpress --namespace wordpress
-
               # Install Prometheus using Helm
               helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
               sleep 10 
@@ -51,6 +45,19 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 300
               # helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
               helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
+
+              # Install WordPress using Helm (from another repo)
+              kubectl create namespace wordpress
+              mkdir -p /home/ubuntu/helm
+              git clone https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress /home/ubuntu/helm
+              # helm install task7-wordpress /home/ubuntu/helm/wordpress --namespace wordpress
+              helm install task7-wordpress /home/ubuntu/helm/wordpress \
+                --namespace wordpress \
+                --set metrics.enabled=true \
+                --set metrics.serviceMonitor.enabled=true \
+                --set metrics.serviceMonitor.namespace=monitoring \
+                --set metrics.serviceMonitor.interval=30s
+
               kubectl get pods -A
               kubectl get svc -A
               helm list -n wordpress
