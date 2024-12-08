@@ -43,7 +43,6 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set alertmanager.service.type=NodePort \
                 --set alertmanager.service.nodePort=30004
               sleep 300
-              # helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
               helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
 
               # Install WordPress using Helm (from another repo)

@@ -156,6 +156,20 @@ helm uninstall wordpress --namespace default
 
 A separate namespace called monitoring is created to isolate all monitoring components.
 
+The installation of Prometheus takes place in a separate namespace called "monitoring" using the following code:
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+kubectl create namespace monitoring 
+helm install prometheus prometheus-community/prometheus --namespace monitoring \
+  --set server.service.type=NodePort \
+  --set server.service.nodePort=30003 \
+  --set alertmanager.service.type=NodePort \
+  --set alertmanager.service.nodePort=30004
+helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
+```
+
 The following components are installed:
 
 Prometheus — the main server for monitoring and storing metrics.
@@ -177,6 +191,13 @@ This will be the public address where the services are accessible.
 
 Prometheus:   ip_address:30003
 Alertmanager: ip_address:30004
+
+To uninstall the prometheus Helm chart and remove all associated resources, use:
+
+```bash
+helm uninstall prometheus --namespace monitoring
+helm uninstall kube-state-metrics --namespace monitoring
+```
 
 
 **Prometheus Metrics for Monitoring:**
