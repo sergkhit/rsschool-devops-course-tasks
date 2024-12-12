@@ -58,7 +58,7 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set admin.password=$(kubectl get secret grafana-admin-password --namespace monitoring -o jsonpath="{.data.password}" | base64 --decode)
               
               # download and install dashboard.json to grafana for 
-              curl -o /home/ubuntu/dashboard.json https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/<path_to_your_dashboard.json>
+              curl -o /home/ubuntu/dashboard.json https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/blob/task8/grafana/dashboard.json
 
               GRAFANA_TOKEN=$(kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin\.password}" | base64 --decode)
               GRAFANA_URL=$(kubectl get svc grafana --namespace monitoring -o jsonpath="{.spec.clusterIP}"):30005
