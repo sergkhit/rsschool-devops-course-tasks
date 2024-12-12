@@ -1,0 +1,85 @@
+{
+    "dashboard": {
+      "title": "Monitoring Dashboard",
+      "tags": ["kubernetes", "prometheus"],
+      "panels": [
+        {
+          "type": "graph",
+          "title": "CPU Usage",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "expr": "rate(container_cpu_usage_seconds_total[5m])",
+              "legendFormat": "{{container_label_com_name}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "ids": [1]
+        },
+        {
+          "type": "graph",
+          "title": "Memory Usage",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "expr": "container_memory_usage_bytes",
+              "legendFormat": "{{container_label_com_name}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "ids": [2]
+        },
+        {
+          "type": "graph",
+          "title": "Storage Usage",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "expr": "node_filesystem_usage",
+              "legendFormat": "{{mountpoint}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "ids": [3]
+        },
+        {
+          "type": "graph",
+          "title": "Network Traffic",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "targets": [
+            {
+              "expr": "rate(container_network_transmit_bytes_total[5m])",
+              "legendFormat": "{{container_label_com_name}} Transmit",
+              "refId": "A"
+            },
+            {
+              "expr": "rate(container_network_receive_bytes_total[5m])",
+              "legendFormat": "{{container_label_com_name}} Receive",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "ids": [4]
+        }
+      ],
+      "schemaVersion": 26,
+      "version": 1,
+      "refresh": "5s"
+    }
+  }
+  

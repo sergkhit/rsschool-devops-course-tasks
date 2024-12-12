@@ -43,8 +43,27 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set alertmanager.service.type=NodePort \
                 --set alertmanager.service.nodePort=30004
               sleep 300
-              # helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
+
+              # helm install kube-state-metrics
               helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
+
+              # Create secret fow password admin grafana
+              kubectl create secret generic grafana-admin-password --from-literal=password=$(openssl rand -base64 12) --namespace monitoring
+
+              # Install Grafana using Helm
+              helm install grafana bitnami/grafana --namespace monitoring \
+                --set service.type=NodePort \
+                --set service.nodePort=30005 \
+                --set admin.existingSecret=grafana-admin-password \
+                --set admin.password=$(kubectl get secret grafana-admin-password --namespace monitoring -o jsonpath="{.data.password}" | base64 --decode)
+              
+              # download and install dashboard.json to grafana for 
+              curl -o /home/ubuntu/dashboard.json https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/<path_to_your_dashboard.json>
+
+              GRAFANA_TOKEN=$(kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin\.password}" | base64 --decode)
+              GRAFANA_URL=$(kubectl get svc grafana --namespace monitoring -o jsonpath="{.spec.clusterIP}"):30005
+              curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${GRAFANA_TOKEN}" --data-binary @/home/ubuntu/dashboard.json "${GRAFANA_URL}/api/dashboards/db"
+
 
               # Install WordPress using Helm (from another repo)
               kubectl create namespace wordpress
