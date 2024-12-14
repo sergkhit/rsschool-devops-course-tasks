@@ -37,7 +37,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               # Install Prometheus using Helm
               mkdir -p /home/ubuntu/prometheus
               # cd /home/ubuntu/prometheus
-              curl -o /home/ubuntu/prometheus/values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/blob/task8/prometheus/values.yaml
+              # curl -o /home/ubuntu/prometheus/values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/blob/task8/prometheus/values.yaml
               helm upgrade --install prometheus bitnami/kube-prometheus \
                 --namespace monitoring \
                 --create-namespace \
@@ -57,10 +57,14 @@ resource "aws_instance" "rs-task-public_server-a" {
               # # helm install kube-state-metrics
               # helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
 
-              # download dashboard.json to grafana
-              curl -o /home/ubuntu/dashboard.json https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/blob/task8/grafana/dashboard.json
+              # download system_metrics.json to grafana for dashboard
+              DASHBOARD_PATH="/opt/grafana/dashboards/system_metrics.json"
+              mkdir -p "$(dirname "$DASHBOARD_PATH")"
+              sudo curl -o "$DASHBOARD_PATH" https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/system_metrics.json
+              sleep 60
 
               # Install Grafana
+              
               PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
               helm upgrade --install grafana bitnami/grafana \
                 --namespace monitoring \
@@ -68,7 +72,7 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set service.type=LoadBalancer \
                 --set service.port=3000 \
                 --set admin.password=${var.grafana-password} \
-                --set dashboards.default.system_metrics.file="/home/ubuntu/dashboard.json" \
+                --set dashboards.default.system_metrics.file="$DASHBOARD_PATH" \
                 --set datasources.default.datasources[0].name=Prometheus \
                 --set datasources.default.datasources[0].type=prometheus \
                 --set datasources.default.datasources[0].url="http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090" \
@@ -77,7 +81,6 @@ resource "aws_instance" "rs-task-public_server-a" {
               
               kubectl get pods -A
               kubectl get svc -A
-              # helm list -n wordpress
               helm list -n monitoring
               EOF
 
