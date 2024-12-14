@@ -62,6 +62,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               mkdir -p "$(dirname "$DASHBOARD_PATH")"
               sudo curl -o "$DASHBOARD_PATH" https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/system_metrics.json
               sleep 60
+              sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
 
               # Install Grafana
               
@@ -69,15 +70,20 @@ resource "aws_instance" "rs-task-public_server-a" {
               helm upgrade --install grafana bitnami/grafana \
                 --namespace monitoring \
                 --create-namespace \
+                --set persistence.enabled=true \
+                --set persistence.size=2Gi \
                 --set service.type=LoadBalancer \
                 --set service.port=3000 \
                 --set admin.password=${var.grafana-password} \
                 --set dashboards.default.system_metrics.file="$DASHBOARD_PATH" \
                 --set datasources.default.datasources[0].name=Prometheus \
                 --set datasources.default.datasources[0].type=prometheus \
-                --set datasources.default.datasources[0].url="http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090" \
+                --set datasources.default.datasources[0].url="http://$PUBLIC_IP:9090" \
                 --set datasources.default.datasources[0].access=direct \
                 --set datasources.default.datasources[0].isDefault=true
+
+              kubectl patch svc prometheus-kube-prometheus-prometheus -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
+              kubectl patch svc grafana -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
               
               kubectl get pods -A
               kubectl get svc -A
