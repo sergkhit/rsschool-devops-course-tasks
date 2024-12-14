@@ -85,4 +85,10 @@ variable "k8s_subdomain_name" {
   default = "k8s.example.com"
 }
 
+variable "grafana-password" {
+  description = "grafana-password"
+  type        = string
+  sensitive   = true
+  default     = "task8pass"
+}
 

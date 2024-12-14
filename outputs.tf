@@ -1,8 +1,8 @@
 
-output "vpc_id" {
-  description = "The ID of the VPC"
-  value       = aws_vpc.TFvpc.id
-}
+# output "vpc_id" {
+#   description = "The ID of the VPC"
+#   value       = aws_vpc.TFvpc.id
+# }
 
 # output "public_subnet_ids" {
 #   description = "IDs of the public subnets"

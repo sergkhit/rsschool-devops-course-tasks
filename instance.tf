@@ -8,11 +8,12 @@ resource "aws_instance" "rs-task-public_server-a" {
 
   user_data = <<-EOF
               #!/bin/bash
+              set -e # Exit on error
               hostnamectl set-hostname "master-k3s"
               # install k3s
-              # curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.3+k3s1 sh -s - server --token=${random_password.k3s_token.result}
               curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.31.2+k3s1 sh -s - server --token=${random_password.k3s_token.result}
-              sleep 30  # wait K3s start
+              sleep 60  # wait K3s start
+
               # Setup kubeconfig
               mkdir -p ~/.kube
               sudo chmod 644 /etc/rancher/k3s/k3s.yaml
@@ -30,56 +31,53 @@ resource "aws_instance" "rs-task-public_server-a" {
               # install Helm and add bitnami
               curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
               helm repo add bitnami https://charts.bitnami.com/bitnami
-              kubectl get pods --namespace default
-
-              # Install Prometheus using Helm
-              helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
               sleep 10 
               helm repo update
-              kubectl create namespace monitoring 
-              helm install prometheus prometheus-community/prometheus --namespace monitoring \
-                --set server.service.type=NodePort \
-                --set server.service.nodePort=30003 \
-                --set alertmanager.service.type=NodePort \
-                --set alertmanager.service.nodePort=30004
-              sleep 300
 
-              # helm install kube-state-metrics
-              helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
+              # Install Prometheus using Helm
+              mkdir -p /home/ubuntu/prometheus
+              # cd /home/ubuntu/prometheus
+              curl -o /home/ubuntu/prometheus/values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/blob/task8/prometheus/values.yaml
+              helm upgrade --install prometheus bitnami/kube-prometheus \
+                --namespace monitoring \
+                --create-namespace \
+                --set prometheus.service.type=LoadBalancer \
+                --set prometheus.service.port=9090 \
+                --set prometheus.retention=7d \
+                --set prometheus.replicas=1 \
+                --set alertmanager.enabled=false \
+                --set prometheusOperator.enabled=true \
+                --set prometheusOperator.replicas=1
+              # sleep 300
 
-              # Create secret fow password admin grafana
-              kubectl create secret generic grafana-admin-password --from-literal=password=$(openssl rand -base64 12) --namespace monitoring
+              # Waiting for Prometheus pods to start
+              echo "Waiting for Prometheus to be deployed..."
+              kubectl wait --for=condition=available --timeout=600s deployment/prometheus-kube-prometheus-operator -n monitoring || echo "Prometheus deployment not found!"
 
-              # Install Grafana using Helm
-              helm install grafana bitnami/grafana --namespace monitoring \
-                --set service.type=NodePort \
-                --set service.nodePort=30005 \
-                --set admin.existingSecret=grafana-admin-password \
-                --set admin.password=$(kubectl get secret grafana-admin-password --namespace monitoring -o jsonpath="{.data.password}" | base64 --decode)
-              
-              # download and install dashboard.json to grafana for 
+              # # helm install kube-state-metrics
+              # helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
+
+              # download dashboard.json to grafana
               curl -o /home/ubuntu/dashboard.json https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/blob/task8/grafana/dashboard.json
 
-              GRAFANA_TOKEN=$(kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin\.password}" | base64 --decode)
-              GRAFANA_URL=$(kubectl get svc grafana --namespace monitoring -o jsonpath="{.spec.clusterIP}"):30005
-              curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ${GRAFANA_TOKEN}" --data-binary @/home/ubuntu/dashboard.json "${GRAFANA_URL}/api/dashboards/db"
-
-
-              # Install WordPress using Helm (from another repo)
-              kubectl create namespace wordpress
-              mkdir -p /home/ubuntu/helm
-              git clone https://github.com/sergkhit/rsschool-devops-course-tasks-WordPress /home/ubuntu/helm
-              # helm install task7-wordpress /home/ubuntu/helm/wordpress --namespace wordpress
-              helm install task7-wordpress /home/ubuntu/helm/wordpress \
-                --namespace wordpress \
-                --set metrics.enabled=true \
-                --set metrics.serviceMonitor.enabled=true \
-                --set metrics.serviceMonitor.namespace=monitoring \
-                --set metrics.serviceMonitor.interval=30s
-
+              # Install Grafana
+              PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+              helm upgrade --install grafana bitnami/grafana \
+                --namespace monitoring \
+                --create-namespace \
+                --set service.type=LoadBalancer \
+                --set service.port=3000 \
+                --set admin.password=${var.grafana-password}
+                --set dashboards.default.system_metrics.file="/home/ubuntu/dashboard.json" \
+                --set datasources.default.datasources[0].name=Prometheus \
+                --set datasources.default.datasources[0].type=prometheus \
+                --set datasources.default.datasources[0].url="http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090" \
+                --set datasources.default.datasources[0].access=direct \
+                --set datasources.default.datasources[0].isDefault=true
+              
               kubectl get pods -A
               kubectl get svc -A
-              helm list -n wordpress
+              # helm list -n wordpress
               helm list -n monitoring
               EOF
 
