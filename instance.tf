@@ -67,7 +67,7 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --create-namespace \
                 --set service.type=LoadBalancer \
                 --set service.port=3000 \
-                --set admin.password=${var.grafana-password}
+                --set admin.password=${var.grafana-password} \
                 --set dashboards.default.system_metrics.file="/home/ubuntu/dashboard.json" \
                 --set datasources.default.datasources[0].name=Prometheus \
                 --set datasources.default.datasources[0].type=prometheus \
