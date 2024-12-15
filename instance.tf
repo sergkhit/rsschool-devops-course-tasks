@@ -61,30 +61,47 @@ resource "aws_instance" "rs-task-public_server-a" {
               DASHBOARD_PATH="/opt/grafana/dashboards/system_metrics.json"
               mkdir -p "$(dirname "$DASHBOARD_PATH")"
               sudo curl -o "$DASHBOARD_PATH" https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/system_metrics.json
+              sudo curl -o /opt/grafana/values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/values.yaml
               sleep 60
               sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
+              sudo chmod 644 /opt/grafana/values.yaml
 
               # Install Grafana
+
+              helm upgrade --install grafana bitnami/grafana --namespace monitoring --create-namespace -f /opt/grafana/values.yaml \
+              --set --set service.type=NodePort \
+              --set service.nodePort=3000 \
+              --set adminPassword=${var.grafana-password}
               
               PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
-              helm upgrade --install grafana bitnami/grafana \
-                --namespace monitoring \
-                --create-namespace \
-                --set persistence.enabled=true \
-                --set persistence.size=2Gi \
-                --set service.type=LoadBalancer \
-                --set service.port=3000 \
-                --set admin.password=${var.grafana-password} \
-                --set dashboards.default.system_metrics.file="$DASHBOARD_PATH" \
-                --set datasources.default.datasources[0].name=Prometheus \
-                --set datasources.default.datasources[0].type=prometheus \
-                --set datasources.default.datasources[0].url="http://$PUBLIC_IP:9090" \
-                --set datasources.default.datasources[0].access=direct \
-                --set datasources.default.datasources[0].isDefault=true
+              # helm upgrade --install grafana bitnami/grafana \
+              #   --namespace monitoring \
+              #   --create-namespace \
+              #   --set persistence.enabled=true \
+              #   --set persistence.size=2Gi \
+              #   --set service.type=LoadBalancer \
+              #   --set service.port=3000 \
+              #   --set admin.password=${var.grafana-password} \
+              #   --set dashboards.default.system_metrics.file="$DASHBOARD_PATH" \
+              #   --set datasources.default.datasources[0].name="Prometheus" \
+              #   --set datasources.default.datasources[0].type="prometheus" \
+              #   --set datasources.default.datasources[0].url="http://$PUBLIC_IP:9090" \
+              #   --set datasources.default.datasources[0].access="direct" \
+              #   --set datasources.default.datasources[0].isDefault=true
 
               kubectl patch svc prometheus-kube-prometheus-prometheus -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
-              kubectl patch svc grafana -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
-              
+              # kubectl patch svc grafana -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
+
+              # Применение дашборда в Grafana через API
+              sleep 60  
+
+              # Получаем адрес Grafana (LoadBalancer)
+              # GRAFANA_IP="$(kubectl get svc --namespace monitoring grafana -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+
+              # Используем curl для загрузки дашборда
+              # Выполнение API-запросов для настройки дашборда и источника данных
+              # curl -X POST -H "Content-Type: application/json" -u admin:${var.grafana-password} -d @/opt/grafana/dashboards/system_metrics.json http://$GRAFANA_IP:3000/api/dashboards/db
+
               kubectl get pods -A
               kubectl get svc -A
               helm list -n monitoring
