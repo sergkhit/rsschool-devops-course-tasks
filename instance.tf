@@ -68,12 +68,15 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               # Install Grafana
 
-              helm upgrade --install grafana bitnami/grafana --namespace monitoring --create-namespace -f /opt/grafana/values.yaml \
-              --set --set service.type=NodePort \
-              --set service.nodePort=3000 \
-              --set adminPassword=${var.grafana-password}
+              helm upgrade --install grafana bitnami/grafana \
+                --namespace monitoring \
+                --create-namespace \
+                -f /opt/grafana/values.yaml \
+                --set --set service.type=NodePort \
+                --set service.nodePort=3000 \
+                --set adminPassword=${var.grafana-password}
               
-              PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+              # PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
               # helm upgrade --install grafana bitnami/grafana \
               #   --namespace monitoring \
               #   --create-namespace \

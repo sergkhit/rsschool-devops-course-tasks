@@ -41,13 +41,12 @@ datasources:
       - name: Prometheus
         type: prometheus
         url: >
-          http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+          http://prometheus-server.prometheus.svc.cluster.local/:9090
         access: proxy
         isDefault: true
         editable: true
 
- Dashboards
- dashboards:
+dashboards:
    enabled: true
    default:
      Task 8:
