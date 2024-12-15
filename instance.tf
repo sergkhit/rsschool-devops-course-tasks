@@ -58,25 +58,25 @@ resource "aws_instance" "rs-task-public_server-a" {
               # helm install kube-state-metrics prometheus-community/kube-state-metrics --namespace monitoring
 
               # download system_metrics.json to grafana for dashboard
-              DASHBOARD_PATH="/opt/grafana/dashboards/system_metrics.json"
-              mkdir -p "$(dirname "$DASHBOARD_PATH")"
-              sudo curl -o "$DASHBOARD_PATH" https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/system_metrics.json
-              sudo curl -o /opt/grafana/values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/values.yaml
-              sleep 60
-              sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
-              sudo chmod 644 /opt/grafana/values.yaml
+              # DASHBOARD_PATH="/opt/grafana/dashboards/system_metrics.json"
+              # mkdir -p "$(dirname "$DASHBOARD_PATH")"
+              # sudo curl -o "$DASHBOARD_PATH" https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/system_metrics.json
+              # sudo curl -o /opt/grafana/values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/values.yaml
+              # sleep 60
+              # sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
+              # sudo chmod 644 /opt/grafana/values.yaml
 
               # Install Grafana
 
-              helm upgrade --install grafana bitnami/grafana \
-                --namespace monitoring \
-                --create-namespace \
-                -f /opt/grafana/values.yaml \
-                --set --set service.type=NodePort \
-                --set service.nodePort=3000 \
-                --set adminPassword=${var.grafana-password}
+              # helm upgrade --install grafana bitnami/grafana \
+              #   --namespace monitoring \
+              #   --create-namespace \
+              #   -f /opt/grafana/values.yaml \
+              #   --set --set service.type=NodePort \
+              #   --set service.nodePort=3000 \
+              #   --set adminPassword=${var.grafana-password}
               
-              # PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+              PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
               # helm upgrade --install grafana bitnami/grafana \
               #   --namespace monitoring \
               #   --create-namespace \
@@ -91,6 +91,28 @@ resource "aws_instance" "rs-task-public_server-a" {
               #   --set datasources.default.datasources[0].url="http://$PUBLIC_IP:9090" \
               #   --set datasources.default.datasources[0].access="direct" \
               #   --set datasources.default.datasources[0].isDefault=true
+
+              DASHBOARD_PATH="/opt/grafana/dashboards/system_metrics.json"
+              mkdir -p /opt/grafana/dashboards/
+              sudo curl -o /opt/grafana/dashboards/system_metrics.json https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/system_metrics.json
+              sleep 60
+              sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
+
+              helm upgrade --install grafana bitnami/grafana \
+                --namespace monitoring \
+                --create-namespace \
+                --set service.type=LoadBalancer \
+                --set service.port=3000 \
+                --set admin.password=${var.grafana-password} \
+                --set dashboardsProvider.enabled=true \
+                --set dashboardsConfigMaps[0].configMapName=task8-dashboard \
+                --set dashboardsConfigMaps[0].fileName=/opt/grafana/dashboards/system_metrics.json \
+                --set datasources.secretDefinition.apiVersion=1 \
+                --set datasources.secretDefinition.datasources[0].name=Prometheus \
+                --set datasources.secretDefinition.datasources[0].type=prometheus \
+                --set datasources.secretDefinition.datasources[0].url=http://prometheus-server.prometheus.svc.cluster.local \
+                --set datasources.secretDefinition.datasources[0].access=proxy \
+                --set datasources.secretDefinition.datasources[0].isDefault=true
 
               kubectl patch svc prometheus-kube-prometheus-prometheus -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
               # kubectl patch svc grafana -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
