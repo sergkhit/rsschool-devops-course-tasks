@@ -36,8 +36,6 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               # Install Prometheus using Helm
               mkdir -p /home/ubuntu/prometheus
-              # cd /home/ubuntu/prometheus
-              # curl -o /home/ubuntu/prometheus/values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/blob/task8/prometheus/values.yaml
               helm upgrade --install prometheus bitnami/kube-prometheus \
                 --namespace monitoring \
                 --create-namespace \
@@ -60,7 +58,6 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set kubeStateMetrics.resources.requests.memory=64Mi \
                 --set prometheusOperator.enabled=true \
                 --set prometheusOperator.replicas=1
-              # sleep 300
 
               # Waiting for Prometheus pods to start
               echo "Waiting for Prometheus to be deployed..."
