@@ -43,9 +43,21 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --create-namespace \
                 --set prometheus.service.type=LoadBalancer \
                 --set prometheus.service.port=9090 \
+                --set prometheus.resources.limits.cpu=200m \
+                --set prometheus.resources.limits.memory=256Mi \
+                --set prometheus.resources.requests.cpu=100m \
+                --set prometheus.resources.requests.memory=128Mi \
                 --set prometheus.retention=7d \
                 --set prometheus.replicas=1 \
                 --set alertmanager.enabled=false \
+                --set nodeExporter.resources.limits.cpu=50m \
+                --set nodeExporter.resources.limits.memory=64Mi \
+                --set nodeExporter.resources.requests.cpu=25m \
+                --set nodeExporter.resources.requests.memory=32Mi \
+                --set kubeStateMetrics.resources.limits.cpu=100m \
+                --set kubeStateMetrics.resources.limits.memory=128Mi \
+                --set kubeStateMetrics.resources.requests.cpu=50m \
+                --set kubeStateMetrics.resources.requests.memory=64Mi \
                 --set prometheusOperator.enabled=true \
                 --set prometheusOperator.replicas=1
               # sleep 300
@@ -98,19 +110,22 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 60
               sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
 
-              helm upgrade --install grafana bitnami/grafana \
+              # ConfigMap для дашборда
+                kubectl create configmap task8-dashboard --from-file=/opt/grafana/dashboards/system_metrics.json --namespace monitoring
+
+              helm upgrade --install grafana oci://registry-1.docker.io/bitnamicharts/grafana \
                 --namespace monitoring \
                 --create-namespace \
-                --set service.type=LoadBalancer \
-                --set service.port=3000 \
+                --set service.type=NodePort \
+                --set service.nodePorts.grafana=30030 \
                 --set admin.password=${var.grafana-password} \
                 --set dashboardsProvider.enabled=true \
                 --set dashboardsConfigMaps[0].configMapName=task8-dashboard \
-                --set dashboardsConfigMaps[0].fileName=/opt/grafana/dashboards/system_metrics.json \
+                --set dashboardsConfigMaps[0].fileName=system_metrics.json \
                 --set datasources.secretDefinition.apiVersion=1 \
                 --set datasources.secretDefinition.datasources[0].name=Prometheus \
                 --set datasources.secretDefinition.datasources[0].type=prometheus \
-                --set datasources.secretDefinition.datasources[0].url=http://prometheus-server.prometheus.svc.cluster.local \
+                --set datasources.secretDefinition.datasources[0].url=http://$PUBLIC_IP:9090 \
                 --set datasources.secretDefinition.datasources[0].access=proxy \
                 --set datasources.secretDefinition.datasources[0].isDefault=true
 
