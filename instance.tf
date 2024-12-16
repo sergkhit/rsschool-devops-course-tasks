@@ -36,8 +36,6 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               # Install Prometheus using Helm
               mkdir -p /home/ubuntu/prometheus
-              # cd /home/ubuntu/prometheus
-              # curl -o /home/ubuntu/prometheus/values.yaml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/blob/task8/prometheus/values.yaml
               helm upgrade --install prometheus bitnami/kube-prometheus \
                 --namespace monitoring \
                 --create-namespace \
@@ -76,7 +74,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 60
               sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
 
-              # ConfigMap для дашборда
+              # ConfigMap for dashboard
                 kubectl create configmap task8-dashboard --from-file=/opt/grafana/dashboards/system_metrics.json --namespace monitoring
 
               helm upgrade --install grafana oci://registry-1.docker.io/bitnamicharts/grafana \
