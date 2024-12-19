@@ -41,6 +41,8 @@ resource "aws_instance" "rs-task-public_server-a" {
               sudo chmod 644 /opt/grafana/config/alerting_rules.yml
               sudo chmod 644 /opt/grafana/config/alertmanager.yml
 
+              kubectl create namespace monitoring || echo "Namespace monitoring already exists"
+
               # Create ConfigMap for alerting rules
               kubectl create configmap alerting-rules --from-file=/opt/grafana/config/alerting_rules.yml --namespace monitoring
 
@@ -62,7 +64,7 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set prometheus.resources.requests.memory=128Mi \
                 --set prometheus.retention=7d \
                 --set prometheus.replicas=1 \
-                --set prometheus.alertmanager.configMapOverrideSecret = "alertmanager-yaml" \
+                --set prometheus.alertmanager.configMapOverrideSecret="alertmanager-yaml" \
                 --set alertmanager.enabled=true \
                 --set alertmanager.alertmanagerConfig=alertmanager.yml \
                 --set alertmanager.persistentVolume.enabled=false \
