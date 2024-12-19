@@ -1,0 +1,22 @@
+groups:
+  - name: k8s-alerts
+    rules:
+      - alert: HighCpuUtilization
+        expr: |
+          sum(rate(node_cpu_seconds_total{mode!="idle"}[2m])) / sum(machine_cpu_cores) > 0.8
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU utilization detected on node {{ $labels.instance }}"
+          description: "Node {{ $labels.instance }} is using over 80% CPU for the last 1 minute."
+
+      - alert: LowMemory
+        expr: |
+          sum(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low memory detected on node {{ $labels.instance }}"
+          description: "Node {{ $labels.instance }} has less than 20% memory available for allocation."

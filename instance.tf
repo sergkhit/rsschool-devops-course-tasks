@@ -34,6 +34,19 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 10 
               helm repo update
 
+              mkdir -p /opt/grafana/config
+              sudo curl -o /opt/grafana/config/alerting_rules.yml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task9/grafana/alerting_rules.yml
+              sudo curl -o /opt/grafana/config/alertmanager.yml https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task9/grafana/alertmanager.yml
+              sleep 60
+              sudo chmod 644 /opt/grafana/config/alerting_rules.yml
+              sudo chmod 644 /opt/grafana/config/alertmanager.yml
+
+              # Create ConfigMap for alerting rules
+              kubectl create configmap alerting-rules --from-file=/opt/grafana/config/alerting_rules.yml --namespace monitoring
+
+              # Create ConfigMap for Alertmanager configuration
+              kubectl create configmap alertmanager-config --from-file=/opt/grafana/config/alertmanager.yml --namespace monitoring
+
               # Install Prometheus using Helm
               mkdir -p /home/ubuntu/prometheus
               helm upgrade --install prometheus bitnami/kube-prometheus \
@@ -41,13 +54,18 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --create-namespace \
                 --set prometheus.service.type=LoadBalancer \
                 --set prometheus.service.port=9090 \
+                --set-file alerting_rules_file=/opt/grafana/config/alerting_rules.yml \
+                --set-file alertmanager_config_file=/opt/grafana/config/alertmanager.yml \
                 --set prometheus.resources.limits.cpu=200m \
                 --set prometheus.resources.limits.memory=256Mi \
                 --set prometheus.resources.requests.cpu=100m \
                 --set prometheus.resources.requests.memory=128Mi \
                 --set prometheus.retention=7d \
                 --set prometheus.replicas=1 \
-                --set alertmanager.enabled=false \
+                --set prometheus.alertmanager.configMapOverrideSecret = "alertmanager-yaml" \
+                --set alertmanager.enabled=true \
+                --set alertmanager.alertmanagerConfig=alertmanager.yml \
+                --set alertmanager.persistentVolume.enabled=false \
                 --set nodeExporter.resources.limits.cpu=50m \
                 --set nodeExporter.resources.limits.memory=64Mi \
                 --set nodeExporter.resources.requests.cpu=25m \
@@ -58,6 +76,7 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set kubeStateMetrics.resources.requests.memory=64Mi \
                 --set prometheusOperator.enabled=true \
                 --set prometheusOperator.replicas=1
+
               # sleep 300
 
               # Waiting for Prometheus pods to start

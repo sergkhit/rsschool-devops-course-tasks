@@ -1,0 +1,22 @@
+global:
+  resolve_timeout: 5m
+
+receivers:
+  - name: "gmail-notifications"
+    email_configs:
+      - to: ${var.email_username}  
+        from: ${var.email_username}
+        smarthost: smtp.gmail.com:587
+        auth_username: ${var.email_username}
+        auth_identity: ${var.email_username}
+        auth_password: "${var.email_access_token}"  
+        send_resolved: true
+        headers:
+          subject: "Prometheus - Alert"
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 2m
+  repeat_interval: 1h
+  receiver: "gmail-notifications"
