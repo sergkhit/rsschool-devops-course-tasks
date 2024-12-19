@@ -74,8 +74,8 @@ resource "aws_instance" "rs-task-public_server-a" {
               sleep 60
               sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
 
-              # ConfigMap for dashboard
-                kubectl create configmap task8-dashboard --from-file=/opt/grafana/dashboards/system_metrics.json --namespace monitoring
+              # ConfigMap для дашборда
+                kubectl create configmap task9-dashboard --from-file=/opt/grafana/dashboards/system_metrics.json --namespace monitoring
 
               helm upgrade --install grafana oci://registry-1.docker.io/bitnamicharts/grafana \
                 --namespace monitoring \
@@ -84,7 +84,7 @@ resource "aws_instance" "rs-task-public_server-a" {
                 --set service.nodePorts.grafana=30030 \
                 --set admin.password=${var.grafana-password} \
                 --set dashboardsProvider.enabled=true \
-                --set dashboardsConfigMaps[0].configMapName=task8-dashboard \
+                --set dashboardsConfigMaps[0].configMapName=task9-dashboard \
                 --set dashboardsConfigMaps[0].fileName=system_metrics.json \
                 --set datasources.secretDefinition.apiVersion=1 \
                 --set datasources.secretDefinition.datasources[0].name=Prometheus \
@@ -96,31 +96,7 @@ resource "aws_instance" "rs-task-public_server-a" {
               kubectl patch svc prometheus-kube-prometheus-prometheus -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
               # kubectl patch svc grafana -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
 
-               # Настройка email-уведомлений
-              EMAIL_ACCESS_TOKEN="${var.email_access_token}"
-
-              # cat <<EOT | kubectl apply -f -
-              # apiVersion: v1
-              # kind: ConfigMap
-              # metadata:
-              #   name: grafana-ini
-              #   namespace: monitoring
-              # data:
-              #   grafana.ini: |
-              #     [smtp]
-              #     enabled = true
-              #     host = smtp.gmail.com:587
-              #     user = "${var.email_username}"
-              #     password = "${var.email_access_token}" # Используем токен доступа
-              #     skip_verify = false
-              #     from_address = "${var.email_username}"
-              #     from_name = "Grafana Alerts"
-              #     auth = "oauth2"
-              #     oauth2_access_token = "${var.email_access_token}"
-              # EOT
-
-
-
+         
               kubectl get pods -A
               kubectl get svc -A
               helm list -n monitoring

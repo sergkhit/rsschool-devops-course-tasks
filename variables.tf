@@ -95,10 +95,12 @@ variable "grafana-password" {
 variable "email_username" {
   description = "Почтовый адрес для SMTP"
   type        = string
+  default     = "s.khitrovo@gmail.com"
 }
 
-variable "email_access_token" {
+variable "email_token" {
   description = "Токен доступа для Gmail"
   type        = string
   sensitive   = true
+  default     = "dkii spca beqp gbgj"
 }
