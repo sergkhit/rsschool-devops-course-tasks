@@ -147,19 +147,40 @@ after create tunnel for kubectl:
 ssh -i rs-task-key.pem -fNL 6443:ip_k3s_master:6443 ubuntu@ip_bastion
 ```
 
-**Upgrading WordPress Chart**
+**Upgrading prometheus **
 
-To upgrade the wordpress Helm chart with new values or chart updates, use:
+To upgrade the prometheus Helm, use:
 
 ```bash
-helm upgrade wordpress /home/ubuntu/helm --namespace default
+             helm upgrade --install prometheus bitnami/kube-prometheus \
+                --namespace monitoring \
+                --create-namespace \
+                --set prometheus.service.type=LoadBalancer \
+                --set prometheus.service.port=9090 \
+                --set prometheus.resources.limits.cpu=200m \
+                --set prometheus.resources.limits.memory=256Mi \
+                --set prometheus.resources.requests.cpu=100m \
+                --set prometheus.resources.requests.memory=128Mi \
+                --set prometheus.retention=7d \
+                --set prometheus.replicas=1 \
+                --set alertmanager.enabled=false \
+                --set nodeExporter.resources.limits.cpu=50m \
+                --set nodeExporter.resources.limits.memory=64Mi \
+                --set nodeExporter.resources.requests.cpu=25m \
+                --set nodeExporter.resources.requests.memory=32Mi \
+                --set kubeStateMetrics.resources.limits.cpu=100m \
+                --set kubeStateMetrics.resources.limits.memory=128Mi \
+                --set kubeStateMetrics.resources.requests.cpu=50m \
+                --set kubeStateMetrics.resources.requests.memory=64Mi \
+                --set prometheusOperator.enabled=true \
+                --set prometheusOperator.replicas=1
 ```
-** Uninstalling WordPress Chart **
+** Uninstalling prometheus **
 
-To uninstall the wordpress Helm chart and remove all associated resources, use:
+To uninstall the prometheus Helm  and remove all associated resources, use:
 
 ```bash
-helm uninstall wordpress --namespace default
+helm uninstall prometheus --namespace monitoring
 ```
 
 **Info about Prometheus**

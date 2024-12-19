@@ -70,7 +70,7 @@ resource "aws_instance" "rs-task-public_server-a" {
 
               DASHBOARD_PATH="/opt/grafana/dashboards/system_metrics.json"
               mkdir -p /opt/grafana/dashboards/
-              sudo curl -o /opt/grafana/dashboards/system_metrics.json https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task8/grafana/system_metrics.json
+              sudo curl -o /opt/grafana/dashboards/system_metrics.json https://raw.githubusercontent.com/sergkhit/rsschool-devops-course-tasks/task9/grafana/system_metrics.json
               sleep 60
               sudo chmod 644 /opt/grafana/dashboards/system_metrics.json
 
@@ -99,6 +99,9 @@ resource "aws_instance" "rs-task-public_server-a" {
               kubectl get pods -A
               kubectl get svc -A
               helm list -n monitoring
+
+
+              
               EOF
 
   user_data_replace_on_change = true

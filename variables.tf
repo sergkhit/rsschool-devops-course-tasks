@@ -89,6 +89,6 @@ variable "grafana-password" {
   description = "grafana-password"
   type        = string
   sensitive   = true
-  default     = "task8pass"
+  default     = "task9pass"
 }
 
