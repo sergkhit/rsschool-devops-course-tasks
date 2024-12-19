@@ -92,3 +92,13 @@ variable "grafana-password" {
   default     = "task9pass"
 }
 
+variable "email_username" {
+  description = "Почтовый адрес для SMTP"
+  type        = string
+}
+
+variable "email_access_token" {
+  description = "Токен доступа для Gmail"
+  type        = string
+  sensitive   = true
+}

@@ -96,6 +96,31 @@ resource "aws_instance" "rs-task-public_server-a" {
               kubectl patch svc prometheus-kube-prometheus-prometheus -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
               # kubectl patch svc grafana -n monitoring -p '{"spec": {"type": "LoadBalancer"}}'
 
+               # Настройка email-уведомлений
+              EMAIL_ACCESS_TOKEN="${var.email_access_token}"
+
+              # cat <<EOT | kubectl apply -f -
+              # apiVersion: v1
+              # kind: ConfigMap
+              # metadata:
+              #   name: grafana-ini
+              #   namespace: monitoring
+              # data:
+              #   grafana.ini: |
+              #     [smtp]
+              #     enabled = true
+              #     host = smtp.gmail.com:587
+              #     user = "${var.email_username}"
+              #     password = "${var.email_access_token}" # Используем токен доступа
+              #     skip_verify = false
+              #     from_address = "${var.email_username}"
+              #     from_name = "Grafana Alerts"
+              #     auth = "oauth2"
+              #     oauth2_access_token = "${var.email_access_token}"
+              # EOT
+
+
+
               kubectl get pods -A
               kubectl get svc -A
               helm list -n monitoring

@@ -155,3 +155,44 @@ resource "aws_iam_instance_profile" "ssm_instance_profile" {
   name = "ssm_instance_profile"
   role = aws_iam_role.ssm_role.name
 }
+
+
+#secrets_manager
+
+resource "aws_iam_policy" "secrets_manager_policy" {
+  name        = "SecretsManagerPolicy"
+  description = "Policy to allow access to AWS Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:ListSecrets",
+          "secretsmanager:DeleteSecret"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "secrets_manager_policy_attachment" {
+  role       = aws_iam_role.role_for_github.name # Или любой другой подходящей роли
+  policy_arn = aws_iam_policy.secrets_manager_policy.arn
+}
+
+
+# Шаг 1: Создать секрет для почтового пароля в AWS Secrets Manager
+resource "aws_secretsmanager_secret" "email_password" {
+  name = "email_password"
+}
+
+resource "aws_secretsmanager_secret_version" "email_password_value" {
+  secret_id     = aws_secretsmanager_secret.email_password.id
+  secret_string = jsonencode({ "email_password" = var.email_access_token }) # Здесь сохраняется ваш пароль
+}
